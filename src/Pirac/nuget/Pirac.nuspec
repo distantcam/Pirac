@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2013/01/nuspec.xsd">
+  <metadata>
+    <id>Pirac</id>
+    <version>0.0</version>
+    <title>Pirac</title>
+    <authors>Cameron MacFarland</authors>
+    <owners>Cameron MacFarland</owners>
+    <licenseUrl>https://github.com/distantcam/Pirac/blob/master/license.txt</licenseUrl>
+    <projectUrl>http://github.com/distantcam/Pirac</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Yet another MVVM Framework.</description>
+    <language>en-AU</language>
+    <tags>WPF, MVVM</tags>
+    <dependencies>
+      <dependency id="Rx-Main" />
+    </dependencies>
+  </metadata>
+</package>
