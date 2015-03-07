@@ -35,6 +35,9 @@
     <NuCakeVersionFieldCount>3</NuCakeVersionFieldCount>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Conventional">
+      <HintPath>..\packages\Conventional.2.0.0.36\lib\net40\Conventional.dll</HintPath>
+    </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="System" />
@@ -51,15 +54,36 @@
     <Reference Include="System.Reactive.PlatformServices">
       <HintPath>..\packages\Rx-PlatformServices.2.2.5\lib\net45\System.Reactive.PlatformServices.dll</HintPath>
     </Reference>
+    <Reference Include="System.Reactive.Windows.Threading">
+      <HintPath>..\packages\Rx-XAML.2.2.5\lib\net45\System.Reactive.Windows.Threading.dll</HintPath>
+    </Reference>
     <Reference Include="System.Xaml" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AwaitableDelegateCommand.cs" />
-    <Compile Include="DelegateCommand.cs" />
-    <Compile Include="BaseCommand.cs" />
-    <Compile Include="CommandExtensions.cs" />
+    <Compile Include="ICommand.cs" />
+    <Compile Include="Internal\AwaitableDelegateCommand.cs" />
+    <Compile Include="BindableObject.cs" />
+    <Compile Include="Attachment.cs" />
+    <Compile Include="Internal\DelegateCommand.cs" />
+    <Compile Include="Internal\UIHelper.cs" />
+    <Compile Include="Internal\ViewModelBinder.cs" />
+    <Compile Include="WindowManager.cs" />
+    <Compile Include="ILogger.cs" />
+    <Compile Include="Internal\Container.cs" />
+    <Compile Include="Extensions\EnumerableExtensions.cs" />
+    <Compile Include="IContainer.cs" />
+    <Compile Include="PiracRunner.cs" />
+    <Compile Include="Default.cs" />
+    <Compile Include="LightInject\LightInject.cs" />
+    <Compile Include="Internal\Logger.cs" />
+    <Compile Include="Conventions\AttachmentConvention.cs" />
+    <Compile Include="Conventions\ViewConvention.cs" />
+    <Compile Include="Conventions\ViewModelConvention.cs" />
+    <Compile Include="Command.cs" />
+    <Compile Include="Internal\BaseCommand.cs" />
+    <Compile Include="Extensions\CommandExtensions.cs" />
     <Compile Include="IAsyncCommand.cs" />
     <Compile Include="IRaiseCanExecuteChanged.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

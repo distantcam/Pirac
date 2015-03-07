@@ -14,6 +14,7 @@
     <tags>WPF, MVVM</tags>
     <dependencies>
       <dependency id="Rx-Main" />
+      <dependency id="Rx-XAML" />
     </dependencies>
   </metadata>
 </package>

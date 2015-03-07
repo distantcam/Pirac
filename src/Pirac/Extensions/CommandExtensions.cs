@@ -1,10 +1,8 @@
-using System.Windows.Input;
-
 namespace Pirac
 {
     public static class CommandExtensions
     {
-        public static void RaiseCanExecuteChanged(this ICommand command)
+        public static void RaiseCanExecuteChanged(this System.Windows.Input.ICommand command)
         {
             var canExecuteChanged = command as IRaiseCanExecuteChanged;
 

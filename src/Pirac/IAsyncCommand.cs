@@ -6,7 +6,7 @@ namespace Pirac
     {
     }
 
-    public interface IAsyncCommand<in T> : IRaiseCanExecuteChanged
+    public interface IAsyncCommand<in T> : IRaiseCanExecuteChanged, System.Windows.Input.ICommand
     {
         Task ExecuteAsync(T obj);
 

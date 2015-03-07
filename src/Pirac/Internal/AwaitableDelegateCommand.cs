@@ -1,10 +1,16 @@
 using System;
 using System.Threading.Tasks;
-using System.Windows.Input;
 
-namespace Pirac
+namespace Pirac.Internal
 {
-    public class AwaitableDelegateCommand<T> : BaseCommand<T>, IAsyncCommand<T>, ICommand
+    internal class AwaitableDelegateCommand : AwaitableDelegateCommand<object>, IAsyncCommand
+    {
+        public AwaitableDelegateCommand(Func<object, Task> executeMethod, Func<object, bool> canExecuteMethod = null) : base(executeMethod, canExecuteMethod)
+        {
+        }
+    }
+
+    internal class AwaitableDelegateCommand<T> : BaseCommand<T>, IAsyncCommand<T>, System.Windows.Input.ICommand
     {
         private readonly Func<T, Task> executeMethod;
 
@@ -16,9 +22,9 @@ namespace Pirac
             this.executeMethod = executeMethod;
         }
 
-        bool ICommand.CanExecute(object parameter) => CanExecute((T)parameter);
+        bool System.Windows.Input.ICommand.CanExecute(object parameter) => CanExecute((T)parameter);
 
-        async void ICommand.Execute(object parameter) => await ExecuteAsync((T)parameter);
+        async void System.Windows.Input.ICommand.Execute(object parameter) => await ExecuteAsync((T)parameter);
 
         public async Task ExecuteAsync(T parameter)
         {

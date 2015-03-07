@@ -2,9 +2,9 @@ using System;
 using System.Reactive.Disposables;
 using System.Windows.Input;
 
-namespace Pirac
+namespace Pirac.Internal
 {
-    public abstract class BaseCommand<T> : IRaiseCanExecuteChanged
+    internal abstract class BaseCommand<T> : IRaiseCanExecuteChanged
     {
         private readonly Func<T, bool> canExecuteMethod;
         private bool isExecuting;
