@@ -62,11 +62,13 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Screen.cs" />
     <Compile Include="ICommand.cs" />
     <Compile Include="Internal\AwaitableDelegateCommand.cs" />
     <Compile Include="BindableObject.cs" />
     <Compile Include="Attachment.cs" />
     <Compile Include="Internal\DelegateCommand.cs" />
+    <Compile Include="IViewAware.cs" />
     <Compile Include="Internal\UIHelper.cs" />
     <Compile Include="Internal\ViewModelBinder.cs" />
     <Compile Include="WindowManager.cs" />

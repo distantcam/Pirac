@@ -71,11 +71,12 @@ namespace Pirac
     {
         void RaiseCanExecuteChanged();
     }
+    public interface IViewAware
+    {
+        void AttachView(System.Windows.FrameworkElement view);
+    }
     public class static PiracRunner
     {
-        public static Pirac.ILogger GetLogger<T>() { }
-        public static Pirac.ILogger GetLogger(System.Type type) { }
-        public static Pirac.ILogger GetLogger(string name) { }
         public static void Start<T>() { }
         public class static Default
         {
@@ -97,6 +98,12 @@ namespace Pirac
         public ReactivePropertyChangingEventArgs(string propertyName, object sender) { }
         public string PropertyName { get; }
         public object Sender { get; }
+    }
+    public class Screen : Pirac.BindableObject, Pirac.IViewAware
+    {
+        public Screen() { }
+        public void AttachView(System.Windows.FrameworkElement view) { }
+        public void TryClose(System.Nullable<bool> dialogResult = null) { }
     }
     public class static WindowManager
     {
