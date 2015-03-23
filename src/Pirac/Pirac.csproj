@@ -32,7 +32,7 @@
   </PropertyGroup>
   <PropertyGroup>
     <NuCakeReferenceFolder>$(MSBuildProjectDirectory)\$(OutputPath)nuget</NuCakeReferenceFolder>
-    <NuCakeVersionFieldCount>3</NuCakeVersionFieldCount>
+    <NuCakeVersionFieldCount>4</NuCakeVersionFieldCount>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Conventional">
