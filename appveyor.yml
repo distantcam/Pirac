@@ -13,3 +13,7 @@ build:
 
 artifacts:
   - path: src\Pirac\bin\Release\*.nupkg
+
+nuget:
+  account_feed: true
+  project_feed: true
