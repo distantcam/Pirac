@@ -13,7 +13,10 @@
     <language>en-AU</language>
     <tags>WPF, MVVM</tags>
     <dependencies>
-      <dependency id="Rx-Main" />
+      <dependency id="Conventional" />
+      <dependency id="Rx-Core" />
+      <dependency id="Rx-Interfaces" />
+      <dependency id="Rx-Linq" />
       <dependency id="Rx-XAML" />
     </dependencies>
   </metadata>
