@@ -1,4 +1,4 @@
-﻿using System.Linq;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Navigation;
@@ -8,10 +8,7 @@ namespace Pirac
 {
     public static class WindowManager
     {
-        public static bool? ShowDialog(object viewModel)
-        {
-            return CreateWindow(viewModel, true).ShowDialog();
-        }
+        public static bool? ShowDialog(object viewModel) => CreateWindow(viewModel, true).ShowDialog();
 
         public static void ShowWindow(object viewModel)
         {

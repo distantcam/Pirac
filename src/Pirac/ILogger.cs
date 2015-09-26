@@ -1,4 +1,4 @@
-namespace Pirac
+﻿namespace Pirac
 {
     public interface ILogger
     {

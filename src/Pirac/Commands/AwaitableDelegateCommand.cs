@@ -1,7 +1,7 @@
 using System;
 using System.Threading.Tasks;
 
-namespace Pirac.Internal
+namespace Pirac.Commands
 {
     internal class AwaitableDelegateCommand : AwaitableDelegateCommand<object>, IAsyncCommand
     {
@@ -10,14 +10,14 @@ namespace Pirac.Internal
         }
     }
 
-    internal class AwaitableDelegateCommand<T> : BaseCommand<T>, IAsyncCommand<T>, System.Windows.Input.ICommand
+    internal class AwaitableDelegateCommand<T> : BaseCommand<T>, IAsyncCommand<T>
     {
         private readonly Func<T, Task> executeMethod;
 
         public AwaitableDelegateCommand(Func<T, Task> executeMethod, Func<T, bool> canExecuteMethod = null) : base(canExecuteMethod)
         {
             if (executeMethod == null)
-                throw new ArgumentNullException(nameof(executeMethod), @"Execute Method cannot be null");
+                throw new ArgumentNullException(nameof(executeMethod), $"{nameof(executeMethod)} is null.");
 
             this.executeMethod = executeMethod;
         }

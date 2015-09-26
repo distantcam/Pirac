@@ -2,7 +2,7 @@
 
 namespace Pirac.Internal
 {
-    internal class Logger : ILogger
+    public class Logger : ILogger
     {
         public void Error(string message)
         {

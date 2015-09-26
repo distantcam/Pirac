@@ -3,12 +3,24 @@
 namespace Pirac
 {
     
+    public abstract class AbstractCommand<T> : Pirac.Commands.BaseCommand<T>, Pirac.ICommand<T>, Pirac.IRaiseCanExecuteChanged, System.Windows.Input.ICommand
+    
+    {
+        public AbstractCommand(System.Func<T, bool> canExecuteMethod = null) { }
+        public abstract void Execute(T obj);
+    }
     public abstract class Attachment<T> : Pirac.IAttachment
     
     {
         protected T viewModel;
         protected Attachment() { }
         protected abstract void OnAttach();
+    }
+    public abstract class AwaitableAbstractCommand<T> : Pirac.Commands.BaseCommand<T>, Pirac.ICommand<T>, Pirac.IRaiseCanExecuteChanged, System.Windows.Input.ICommand
+    
+    {
+        protected AwaitableAbstractCommand() { }
+        public abstract System.Threading.Tasks.Task ExecuteAsync(T obj);
     }
     public class BindableObject : System.ComponentModel.INotifyPropertyChanged, System.ComponentModel.INotifyPropertyChanging
     {
@@ -24,8 +36,8 @@ namespace Pirac
     }
     public class static Command
     {
-        public static Pirac.ICommand Create(System.Action executeMethod) { }
-        public static Pirac.ICommand Create(System.Action executeMethod, System.Func<bool> canExecuteMethod) { }
+        public static System.Windows.Input.ICommand Create(System.Action executeMethod) { }
+        public static System.Windows.Input.ICommand Create(System.Action executeMethod, System.Func<bool> canExecuteMethod) { }
         public static Pirac.ICommand<T> Create<T>(System.Action<T> executeMethod) { }
         public static Pirac.ICommand<T> Create<T>(System.Action<T> executeMethod, System.Func<T, bool> canExecuteMethod) { }
         public static Pirac.IAsyncCommand Create(System.Func<System.Threading.Tasks.Task> executeMethod) { }
@@ -48,7 +60,6 @@ namespace Pirac
     {
         void AttachTo(object obj);
     }
-    public interface ICommand : Pirac.ICommand<object>, Pirac.IRaiseCanExecuteChanged, System.Windows.Input.ICommand { }
     public interface ICommand<in T> : Pirac.IRaiseCanExecuteChanged, System.Windows.Input.ICommand
     
     {
@@ -111,19 +122,28 @@ namespace Pirac
         public static void ShowWindow(object viewModel) { }
     }
 }
-namespace Pirac.Conventions
+namespace Pirac.Commands
 {
     
-    public class AttachmentConvention : Conventional.Conventions.Convention
+    public abstract class BaseCommand<T> : Pirac.IRaiseCanExecuteChanged
+    
     {
-        public AttachmentConvention() { }
+        public BaseCommand(System.Func<T, bool> canExecuteMethod = null) { }
+        public event System.EventHandler CanExecuteChanged;
+        public bool CanExecute(T parameter) { }
+        public void RaiseCanExecuteChanged() { }
+        protected System.IDisposable StartExecuting() { }
     }
-    public class ViewConvention : Conventional.Conventions.Convention
+}
+namespace Pirac.Internal
+{
+    
+    public class Logger : Pirac.ILogger
     {
-        public ViewConvention() { }
-    }
-    public class ViewModelConvention : Conventional.Conventions.Convention
-    {
-        public ViewModelConvention() { }
+        public Logger() { }
+        public void Debug(string message) { }
+        public void Error(string message) { }
+        public void Info(string message) { }
+        public void Warn(string message) { }
     }
 }

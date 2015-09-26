@@ -2,9 +2,9 @@ using System;
 using System.Reactive.Disposables;
 using System.Windows.Input;
 
-namespace Pirac.Internal
+namespace Pirac.Commands
 {
-    internal abstract class BaseCommand<T> : IRaiseCanExecuteChanged
+    public abstract class BaseCommand<T> : IRaiseCanExecuteChanged
     {
         private readonly Func<T, bool> canExecuteMethod;
         private bool isExecuting;
@@ -20,7 +20,10 @@ namespace Pirac.Internal
             remove { CommandManager.RequerySuggested -= value; }
         }
 
-        public void RaiseCanExecuteChanged() => CommandManager.InvalidateRequerySuggested();
+        public void RaiseCanExecuteChanged()
+        {
+            CommandManager.InvalidateRequerySuggested();
+        }
 
         public bool CanExecute(T parameter)
         {

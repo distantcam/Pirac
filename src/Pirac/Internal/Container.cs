@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Pirac.LightInject;
 
 namespace Pirac.Internal
@@ -11,8 +12,10 @@ namespace Pirac.Internal
 
         public void Setup(IEnumerable<Type> typesToRegister, IEnumerable<Type> viewModelTypesToRegister)
         {
-            typesToRegister.Apply(container.Register);
-            viewModelTypesToRegister.Apply(container.Register);
+            foreach (var type in typesToRegister.Concat(viewModelTypesToRegister))
+            {
+                container.Register(type);
+            }
 
             this.viewModelTypes = new HashSet<Type>(viewModelTypesToRegister);
         }

@@ -3,7 +3,7 @@ using Conventional.Conventions;
 
 namespace Pirac.Conventions
 {
-    public class ViewModelConvention : Convention
+    internal class ViewModelConvention : Convention
     {
         public ViewModelConvention()
         {

@@ -1,8 +1,8 @@
-using Conventional.Conventions;
+﻿using Conventional.Conventions;
 
 namespace Pirac.Conventions
 {
-    public class AttachmentConvention : Convention
+    internal class AttachmentConvention : Convention
     {
         public AttachmentConvention()
         {

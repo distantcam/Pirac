@@ -1,8 +1,8 @@
-using Conventional.Conventions;
+﻿using Conventional.Conventions;
 
 namespace Pirac.Conventions
 {
-    public class ViewConvention : Convention
+    internal class ViewConvention : Convention
     {
         public ViewConvention()
         {
