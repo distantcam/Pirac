@@ -8,7 +8,7 @@ namespace Pirac.Conventions
         {
             Must.HaveNameEndWith("Attachment");
 
-            Should.Implement<IAttachment>();
+            Should.BeAConcreteClass().Implement<IAttachment>();
 
             BaseName = t => t.Name.Substring(0, t.Name.Length - 10);
 

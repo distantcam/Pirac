@@ -2,15 +2,14 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Navigation;
-using Pirac.Internal;
 
-namespace Pirac
+namespace Pirac.Internal
 {
-    public static class WindowManager
+    internal class WindowManager : IWindowManager
     {
-        public static bool? ShowDialog(object viewModel) => CreateWindow(viewModel, true).ShowDialog();
+        public bool? ShowDialog(object viewModel) => CreateWindow(viewModel, true).ShowDialog();
 
-        public static void ShowWindow(object viewModel)
+        public void ShowWindow(object viewModel)
         {
             NavigationWindow navWindow = null;
 

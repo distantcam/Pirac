@@ -11,7 +11,8 @@
     <AssemblyName>Pirac</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <NuGetPackageImportStamp>571cb845</NuGetPackageImportStamp>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -67,7 +68,22 @@
     <Compile Include="Commands\AwaitableDelegateCommand.cs" />
     <Compile Include="Commands\BaseCommand.cs" />
     <Compile Include="Commands\DelegateCommand.cs" />
+    <Compile Include="Commands\ObservableCommand.cs" />
+    <Compile Include="Extensions\ObservableExtensions.cs" />
+    <Compile Include="IConventionManager.cs" />
+    <Compile Include="Internal\ConventionManager.cs" />
+    <Compile Include="Internal\WindowManager.cs" />
+    <Compile Include="IObservableCommand.cs" />
+    <Compile Include="IObservablePropertyChanged.cs" />
+    <Compile Include="IObservablePropertyChanging.cs" />
+    <Compile Include="IWindowManager.cs" />
     <Compile Include="LightInject\LightInject.cs" />
+    <Compile Include="ObservableChangedExtensions.cs" />
+    <Compile Include="PiracContext.cs" />
+    <Compile Include="PropertyChangedData.cs" />
+    <Compile Include="PropertyChangingData.cs" />
+    <Compile Include="ReactiveExtensions.cs" />
+    <Compile Include="SchedulerProvider.cs" />
     <Compile Include="Screen.cs" />
     <Compile Include="ICommand.cs" />
     <Compile Include="BindableObject.cs" />
@@ -75,12 +91,11 @@
     <Compile Include="IViewAware.cs" />
     <Compile Include="Internal\UIHelper.cs" />
     <Compile Include="Internal\ViewModelBinder.cs" />
-    <Compile Include="WindowManager.cs" />
+    <Compile Include="ViewModelTemplateSelector.cs" />
     <Compile Include="ILogger.cs" />
     <Compile Include="Internal\Container.cs" />
     <Compile Include="IContainer.cs" />
     <Compile Include="PiracRunner.cs" />
-    <Compile Include="Default.cs" />
     <Compile Include="Internal\Logger.cs" />
     <Compile Include="Conventions\AttachmentConvention.cs" />
     <Compile Include="Conventions\ViewConvention.cs" />
@@ -92,28 +107,17 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="nuget\Pirac.nuspec">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      <SubType>Designer</SubType>
-    </None>
     <None Include="packages.config" />
+    <None Include="Packaging\CustomTargets.targets" />
+    <None Include="Packaging\Pirac.nuspec" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <PropertyGroup>
-    <PreBuildEvent>rmdir /s /q $(TargetDir)nuget
-del /s /q $(TargetDir)*.nupkg
-</PreBuildEvent>
-    <PostBuildEvent>xcopy /y $(TargetDir)$(TargetName).* $(TargetDir)nuget\lib\net45\
-xcopy /y /s $(ProjectDir)nuget $(TargetDir)nuget
-</PostBuildEvent>
-  </PropertyGroup>
-  <Import Project="..\packages\NuCake.1.4.1\build\NuCake.targets" Condition="Exists('..\packages\NuCake.1.4.1\build\NuCake.targets')" />
+  <Import Project="Packaging\CustomTargets.targets" />
+  <Import Project="..\packages\GitVersionTask.3.3.0\build\dotnet\GitVersionTask.targets" Condition="Exists('..\packages\GitVersionTask.3.3.0\build\dotnet\GitVersionTask.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
-    <Error Condition="!Exists('..\packages\NuCake.1.4.1\build\NuCake.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\NuCake.1.4.1\build\NuCake.targets'))" />
-    <Error Condition="!Exists('..\packages\GitVersionTask.2.0.1\Build\GitVersionTask.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\GitVersionTask.2.0.1\Build\GitVersionTask.targets'))" />
+    <Error Condition="!Exists('..\packages\GitVersionTask.3.3.0\build\dotnet\GitVersionTask.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\GitVersionTask.3.3.0\build\dotnet\GitVersionTask.targets'))" />
   </Target>
-  <Import Project="..\packages\GitVersionTask.2.0.1\Build\GitVersionTask.targets" Condition="Exists('..\packages\GitVersionTask.2.0.1\Build\GitVersionTask.targets')" />
 </Project>

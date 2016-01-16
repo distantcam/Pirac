@@ -7,9 +7,9 @@ namespace Pirac.Conventions
     {
         public ViewModelConvention()
         {
-            Must.HaveNameEndWith("ViewModel");
+            Must.HaveNameEndWith("ViewModel").BeAClass();
 
-            Should.Implement<INotifyPropertyChanged>();
+            Should.BeAConcreteClass().Implement<INotifyPropertyChanged>();
 
             BaseName = t => t.Name.Substring(0, t.Name.Length - 9);
 

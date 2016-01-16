@@ -1,61 +1,44 @@
 ﻿using System;
-using System.Linq;
-using Conventional;
+using System.Reactive.Concurrency;
+using Pirac.Internal;
 
 namespace Pirac
 {
-    public static partial class PiracRunner
+    public static class PiracRunner
     {
-        private static IContainer container;
-        private static ILogger Log;
-
-        internal static IConventionManager ConventionManager { get; set; }
-
-        public static void Start<T>()
+        public static void Start<T>(PiracContext context = null)
         {
-            Log = GetLogger(typeof(PiracRunner));
+            context = context ?? new PiracContext();
 
-            ConventionBuilder.Logger = Default.Logger;
+            Logger = context.Logger;
+            Container = context.Container;
+            WindowManager = context.WindowManager;
+            UIScheduler = context.UIScheduler;
+            BackgroundScheduler = context.BackgroundScheduler;
 
-            var builder = new ConventionBuilder();
+            ConventionManager = new ConventionManager(typeof(T), context.AttachmentConvention, context.ViewConvention, context.ViewModelConvention);
 
-            builder.Scan<T>()
-                .For(Default.AttachmentConvention)
-                .For(Default.ViewConvention)
-                .For(Default.ViewModelConvention);
+            Container.Configure(ConventionManager.FindAllViews(), ConventionManager.FindAllViewModels(), ConventionManager.FindAllAttachments(), ConventionManager);
 
-            ConventionManager = builder.Build();
-
-            ConventionManager.Verify();
-
-            var typesToRegister = ConventionManager.FindAll(Default.ViewConvention)
-                .Concat(ConventionManager.FindAll(Default.AttachmentConvention))
-                ;
-
-            container = Default.IoC;
-
-            container.Setup(typesToRegister, ConventionManager.FindAll(Default.ViewModelConvention));
-
-            var viewModel = GetInstance(typeof(T));
-
+            var viewModel = Container.GetInstance<T>();
             WindowManager.ShowWindow(viewModel);
         }
 
-        internal static ILogger GetLogger<T>() => GetLogger(typeof(T));
+        internal static Func<string, ILogger> Logger { get; set; }
+        internal static IContainer Container { get; set; }
+        internal static IWindowManager WindowManager { get; set; }
+        internal static IScheduler UIScheduler { get; set; }
+        internal static IScheduler BackgroundScheduler { get; set; }
+        internal static IConventionManager ConventionManager { get; set; }
 
-        internal static ILogger GetLogger(Type type) => GetLogger(type.FullName);
+        internal static ILogger GetLogger(string name) => Logger(name);
 
-        internal static ILogger GetLogger(string name) => Default.Logger(name);
-
-        internal static T GetInstance<T>() => (T)container.GetInstance(typeof(T));
-
-        internal static object GetInstance(Type type) => container.GetInstance(type);
+        internal static ILogger GetLogger<TType>() => Logger(typeof(TType).Name);
 
         internal static object GetViewForViewModel(object viewModel)
         {
-            var viewType = ConventionManager.FindAll(Default.ViewConvention, viewModel).Single();
-
-            return GetInstance(viewType);
+            var viewType = ConventionManager.FindView(viewModel);
+            return Container.GetInstance(viewType);
         }
     }
 }

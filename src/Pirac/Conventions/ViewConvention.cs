@@ -6,7 +6,9 @@ namespace Pirac.Conventions
     {
         public ViewConvention()
         {
-            Must.HaveNameEndWith("View");
+            Must.HaveNameEndWith("View").BeAClass();
+
+            Should.BeAConcreteClass();
 
             BaseName = t => t.Name.Substring(0, t.Name.Length - 4);
 

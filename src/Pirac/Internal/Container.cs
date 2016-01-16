@@ -7,32 +7,27 @@ namespace Pirac.Internal
 {
     internal class Container : IContainer
     {
-        private HashSet<Type> viewModelTypes;
         private IServiceContainer container = new ServiceContainer();
 
-        public void Setup(IEnumerable<Type> typesToRegister, IEnumerable<Type> viewModelTypesToRegister)
+        public void Configure(IEnumerable<Type> views, IEnumerable<Type> viewModels, IEnumerable<Type> attachments, IConventionManager conventionManager)
         {
-            foreach (var type in typesToRegister.Concat(viewModelTypesToRegister))
+            foreach (var type in views.Concat(viewModels).Concat(attachments))
             {
                 container.Register(type);
             }
 
-            this.viewModelTypes = new HashSet<Type>(viewModelTypesToRegister);
-        }
-
-        public object GetInstance(Type type)
-        {
-            var instance = container.GetInstance(type);
-
-            if (viewModelTypes.Contains(type))
+            container.Initialize(registration => viewModels.Contains(registration.ServiceType), (factory, instance) =>
             {
-                var attachments = PiracRunner.ConventionManager.FindAll(PiracRunner.Default.AttachmentConvention, type);
-                if (attachments != null)
-                    foreach (var a in attachments)
-                        ((IAttachment)container.GetInstance(a)).AttachTo(instance);
-            }
-
-            return instance;
+                var matchingAttachments = conventionManager.FindMatchingAttachments(instance).Select(factory.GetAllInstances).Cast<IAttachment>();
+                foreach (var attachment in matchingAttachments)
+                {
+                    attachment.AttachTo(instance);
+                }
+            });
         }
+
+        public object GetInstance(Type type) => container.GetInstance(type);
+
+        public T GetInstance<T>() => container.GetInstance<T>();
     }
 }

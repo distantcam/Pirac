@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Linq;
 using System.Reflection;
 using System.Windows;
@@ -9,11 +8,11 @@ namespace Pirac.Internal
 {
     internal static class ViewModelBinder
     {
-        private static ILogger Log = PiracRunner.GetLogger(typeof(ViewModelBinder));
+        private static ILogger Log = PiracRunner.GetLogger(nameof(ViewModelBinder));
 
         public static void Bind(FrameworkElement view, object viewModel)
         {
-            Log.Info(string.Format("Binding '{0}' to '{1}'", view, viewModel));
+            Log.Info($"Binding '{view}' to '{viewModel}'");
 
             var namedElements = UIHelper.FindNamedChildren(view);
 
@@ -26,12 +25,12 @@ namespace Pirac.Internal
                 var matchingProperty = viewModelProperties.Where(p => p.Name == element.Name).SingleOrDefault();
                 if (matchingProperty == null)
                 {
-                    Log.Debug(String.Format("No matching property for element '{0}'", element.Name));
+                    Log.Debug($"No matching property for element '{element.Name}'");
                     continue;
                 }
 
                 if (!TryBind(element, matchingProperty, viewModel))
-                    Log.Debug(string.Format("Could not bind element '{0}' to property '{1}'", element.Name, matchingProperty.Name));
+                    Log.Debug($"Could not bind element '{element.Name}' to property '{matchingProperty.Name}'");
             }
 
             view.DataContext = viewModel;
@@ -49,7 +48,7 @@ namespace Pirac.Internal
             var contentControl = element as ContentControl;
             if (contentControl != null && contentControl.Content == null)
             {
-                Log.Info(string.Format("Binding ContentControl {0} to property {1}", contentControl.Name, property.Name));
+                Log.Info($"Binding ContentControl {contentControl.Name} to property {property.Name}");
 
                 var contentViewModel = property.GetValue(viewModel, null);
                 if (contentViewModel != null)
@@ -65,7 +64,7 @@ namespace Pirac.Internal
             var itemsControl = element as ItemsControl;
             if (itemsControl != null)
             {
-                Log.Info(string.Format("Binding ItemsControl {0} to property {1}", itemsControl.Name, property.Name));
+                Log.Info($"Binding ItemsControl {itemsControl.Name} to property {property.Name}");
 
                 var itemViewModel = property.GetValue(viewModel, null) as IEnumerable;
                 if (itemViewModel != null)

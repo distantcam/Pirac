@@ -1,3 +1,8 @@
+using System;
+using System.Reactive.Linq;
+using System.Threading.Tasks;
+using Pirac.Commands;
+
 namespace Pirac
 {
     public static class CommandExtensions
@@ -8,6 +13,26 @@ namespace Pirac
 
             if (canExecuteChanged != null)
                 canExecuteChanged.RaiseCanExecuteChanged();
+        }
+
+        public static IObservableCommand ToCommand(this IObservable<bool> canExecuteObservable, Func<object, Task> action)
+        {
+            return new ObservableCommand(canExecuteObservable, action);
+        }
+
+        public static IObservableCommand ToCommand(this IObservable<PropertyChangedData<bool>> canExecuteObservable, Func<object, Task> action)
+        {
+            return new ObservableCommand(canExecuteObservable.Select(pc => pc.After), action);
+        }
+
+        public static IObservableCommand ToCommand(this IObservable<bool> canExecuteObservable, Action<object> action)
+        {
+            return new ObservableCommand(canExecuteObservable, p => { action(p); return Task.FromResult(0); });
+        }
+
+        public static IObservableCommand ToCommand(this IObservable<PropertyChangedData<bool>> canExecuteObservable, Action<object> action)
+        {
+            return new ObservableCommand(canExecuteObservable.Select(pc => pc.After), p => { action(p); return Task.FromResult(0); });
         }
     }
 }

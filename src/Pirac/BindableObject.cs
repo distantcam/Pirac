@@ -7,40 +7,41 @@ using System.Threading;
 
 namespace Pirac
 {
-    public class BindableObject : INotifyPropertyChanged, INotifyPropertyChanging
+    public class BindableObject : INotifyPropertyChanged, INotifyPropertyChanging, IObservablePropertyChanged, IObservablePropertyChanging, IDisposable
     {
         private long changeNotificationSuppressionCount;
 
-        private ISubject<ReactivePropertyChangedEventArgs> changed;
-        private ISubject<ReactivePropertyChangingEventArgs> changing;
+        private Subject<PropertyChangedData> changed;
+        private Subject<PropertyChangingData> changing;
+
+        private volatile int disposeSignaled;
 
         public BindableObject()
         {
-            changed = new Subject<ReactivePropertyChangedEventArgs>();
-            changed.ObserveOnDispatcher().Subscribe(args =>
-            {
-                var handler = PropertyChanged;
-                if (handler != null)
-                    handler(args.Sender, new PropertyChangedEventArgs(args.PropertyName));
-            });
+            changed = new Subject<PropertyChangedData>();
+            changed.ObserveOn(SchedulerProvider.UIScheduler)
+                .Subscribe(args =>
+                {
+                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(args.PropertyName));
+                });
             Changed = changed.AsObservable();
 
-            changing = new Subject<ReactivePropertyChangingEventArgs>();
-            changing.ObserveOnDispatcher().Subscribe(args =>
-            {
-                var handler = PropertyChanging;
-                if (handler != null)
-                    handler(args.Sender, new PropertyChangingEventArgs(args.PropertyName));
-            });
+            changing = new Subject<PropertyChangingData>();
+            changing.ObserveOn(SchedulerProvider.UIScheduler)
+                .Subscribe(args =>
+                {
+                    PropertyChanging?.Invoke(this, new PropertyChangingEventArgs(args.PropertyName));
+                });
+            Changing = changing.AsObservable();
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
 
         public event PropertyChangingEventHandler PropertyChanging;
 
-        public IObservable<ReactivePropertyChangedEventArgs> Changed { get; }
+        public IObservable<PropertyChangedData> Changed { get; }
 
-        public IObservable<ReactivePropertyChangingEventArgs> Changing { get; }
+        public IObservable<PropertyChangingData> Changing { get; }
 
         public bool ChangeNotificationEnabled => Interlocked.Read(ref changeNotificationSuppressionCount) == 0L;
 
@@ -50,48 +51,36 @@ namespace Pirac
             return Disposable.Create(() => Interlocked.Decrement(ref changeNotificationSuppressionCount));
         }
 
-        protected void OnPropertyChanged(string propertyName)
+        protected void OnPropertyChanged(string propertyName, object before, object after)
         {
             if (ChangeNotificationEnabled)
-                changed.OnNext(new ReactivePropertyChangedEventArgs(propertyName, this));
+                changed.OnNext(new PropertyChangedData(propertyName, before, after));
         }
 
-        protected void OnPropertyChanging(string propertyName)
+        protected void OnPropertyChanging(string propertyName, object before)
         {
             if (ChangeNotificationEnabled)
-                changing.OnNext(new ReactivePropertyChangingEventArgs(propertyName, this));
+                changing.OnNext(new PropertyChangingData(propertyName, before));
         }
-    }
 
-    public class ReactivePropertyChangedEventArgs
-    {
-        private readonly string propertyName;
-        private readonly object sender;
-
-        public ReactivePropertyChangedEventArgs(string propertyName, object sender)
+        public virtual void Dispose()
         {
-            this.sender = sender;
-            this.propertyName = propertyName;
+            if (Interlocked.Exchange(ref disposeSignaled, 1) != 0)
+            {
+                return;
+            }
+            if (changing != null)
+            {
+                changing.OnCompleted();
+                changing.Dispose();
+                changing = null;
+            }
+            if (changed != null)
+            {
+                changed.OnCompleted();
+                changed.Dispose();
+                changed = null;
+            }
         }
-
-        public string PropertyName => propertyName;
-
-        public object Sender => sender;
-    }
-
-    public class ReactivePropertyChangingEventArgs
-    {
-        private readonly string propertyName;
-        private readonly object sender;
-
-        public ReactivePropertyChangingEventArgs(string propertyName, object sender)
-        {
-            this.sender = sender;
-            this.propertyName = propertyName;
-        }
-
-        public string PropertyName => propertyName;
-
-        public object Sender => sender;
     }
 }
