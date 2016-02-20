@@ -48,6 +48,9 @@ namespace Pirac
     }
     public class static CommandExtensions
     {
+        public static System.IDisposable Execute<T>(this System.IObservable<T> observable, System.Windows.Input.ICommand command) { }
+        public static System.IDisposable Execute<T>(this System.IObservable<T> observable, Pirac.ICommand<T> command) { }
+        public static System.IDisposable ExecuteAsync<T>(this System.IObservable<T> observable, Pirac.IAsyncCommand<T> command) { }
         public static void RaiseCanExecuteChanged(this System.Windows.Input.ICommand command) { }
         public static Pirac.IObservableCommand ToCommand(this System.IObservable<bool> canExecuteObservable, System.Func<object, System.Threading.Tasks.Task> action) { }
         public static Pirac.IObservableCommand ToCommand(this System.IObservable<Pirac.PropertyChangedData<bool>> canExecuteObservable, System.Func<object, System.Threading.Tasks.Task> action) { }
