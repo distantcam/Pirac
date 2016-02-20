@@ -5,6 +5,9 @@ configuration: Release
 before_build:
   - nuget restore src\Pirac.sln
 
+cache:
+  - src\packages -> **\packages.config
+
 build:
   parallel: true
   project: src\Pirac.sln

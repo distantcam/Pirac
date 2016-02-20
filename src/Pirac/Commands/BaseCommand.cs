@@ -1,5 +1,6 @@
 using System;
 using System.Reactive.Disposables;
+using System.Threading;
 using System.Windows.Input;
 
 namespace Pirac.Commands
@@ -7,7 +8,7 @@ namespace Pirac.Commands
     public abstract class BaseCommand<T> : IRaiseCanExecuteChanged
     {
         private readonly Func<T, bool> canExecuteMethod;
-        private bool isExecuting;
+        private SemaphoreSlim isExecuting = new SemaphoreSlim(1);
 
         public BaseCommand(Func<T, bool> canExecuteMethod = null)
         {
@@ -27,7 +28,7 @@ namespace Pirac.Commands
 
         public bool CanExecute(T parameter)
         {
-            if (isExecuting)
+            if (isExecuting.CurrentCount == 0)
                 return false;
             if (canExecuteMethod == null)
                 return true;
@@ -37,12 +38,12 @@ namespace Pirac.Commands
 
         protected IDisposable StartExecuting()
         {
-            isExecuting = true;
+            isExecuting.Wait();
             RaiseCanExecuteChanged();
 
             return Disposable.Create(() =>
             {
-                isExecuting = false;
+                isExecuting.Release();
                 RaiseCanExecuteChanged();
             });
         }
