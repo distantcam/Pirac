@@ -222,4 +222,11 @@ namespace Pirac.Internal
         public void Info(string message) { }
         public void Warn(string message) { }
     }
+    public class ViewNotFoundException : System.Exception
+    {
+        public ViewNotFoundException() { }
+        public ViewNotFoundException(string message) { }
+        public ViewNotFoundException(string message, System.Exception inner) { }
+        protected ViewNotFoundException(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) { }
+    }
 }
