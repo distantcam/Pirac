@@ -69,6 +69,7 @@
     <Compile Include="Commands\BaseCommand.cs" />
     <Compile Include="Commands\DelegateCommand.cs" />
     <Compile Include="Commands\ObservableCommand.cs" />
+    <Compile Include="Extensions\HelperExtensions.cs" />
     <Compile Include="Extensions\ObservableExtensions.cs" />
     <Compile Include="IConventionManager.cs" />
     <Compile Include="Internal\ConventionManager.cs" />
