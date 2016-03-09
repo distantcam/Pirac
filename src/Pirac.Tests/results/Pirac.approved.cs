@@ -28,8 +28,8 @@ namespace Pirac
         public System.IObservable<Pirac.PropertyChangedData> Changed { get; }
         public bool ChangeNotificationEnabled { get; }
         public System.IObservable<Pirac.PropertyChangingData> Changing { get; }
-        public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
-        public event System.ComponentModel.PropertyChangingEventHandler PropertyChanging;
+        public event System.ComponentModel.PropertyChangedEventHandler System.ComponentModel.INotifyPropertyChanged.PropertyChanged;
+        public event System.ComponentModel.PropertyChangingEventHandler System.ComponentModel.INotifyPropertyChanging.PropertyChanging;
         public virtual void Dispose() { }
         protected void OnPropertyChanged(string propertyName, object before, object after) { }
         protected void OnPropertyChanging(string propertyName, object before) { }
@@ -121,8 +121,12 @@ namespace Pirac
     {
         public static System.IObservable<Pirac.PropertyChangedData<TProperty>> CastPropertyType<TProperty>(this System.IObservable<Pirac.PropertyChangedData> observable) { }
         public static System.IObservable<Pirac.PropertyChangingData<TProperty>> CastPropertyType<TProperty>(this System.IObservable<Pirac.PropertyChangingData> observable) { }
+        public static System.IObservable<Pirac.PropertyChangedData> ChangedProperties(this Pirac.IObservablePropertyChanged changed, params string[] propertyNames) { }
+        public static System.IObservable<Pirac.PropertyChangedData<TProperty>> ChangedProperties<TProperty>(this Pirac.IObservablePropertyChanged changed, params string[] propertyNames) { }
         public static System.IObservable<Pirac.PropertyChangedData> ChangedProperty(this Pirac.IObservablePropertyChanged changed, string propertyName) { }
         public static System.IObservable<Pirac.PropertyChangedData<TProperty>> ChangedProperty<TProperty>(this Pirac.IObservablePropertyChanged changed, string propertyName) { }
+        public static System.IObservable<Pirac.PropertyChangingData> ChangingProperties(this Pirac.IObservablePropertyChanging changing, params string[] propertyNames) { }
+        public static System.IObservable<Pirac.PropertyChangingData<TProperty>> ChangingProperties<TProperty>(this Pirac.IObservablePropertyChanging changing, params string[] propertyNames) { }
         public static System.IObservable<Pirac.PropertyChangingData> ChangingProperty(this Pirac.IObservablePropertyChanging changing, string propertyName) { }
         public static System.IObservable<Pirac.PropertyChangingData<TProperty>> ChangingProperty<TProperty>(this Pirac.IObservablePropertyChanging changing, string propertyName) { }
     }
@@ -144,6 +148,14 @@ namespace Pirac
     }
     public class static PiracRunner
     {
+        public static System.Reactive.Concurrency.IScheduler BackgroundScheduler { get; }
+        public static Pirac.IContainer Container { get; }
+        public static Pirac.IConventionManager ConventionManager { get; }
+        public static System.Func<string, Pirac.ILogger> Logger { get; }
+        public static System.Reactive.Concurrency.IScheduler UIScheduler { get; }
+        public static Pirac.IWindowManager WindowManager { get; }
+        public static Pirac.ILogger GetLogger(string name) { }
+        public static Pirac.ILogger GetLogger<TType>() { }
         public static void Start<T>(Pirac.PiracContext context = null) { }
     }
     public class PropertyChangedData

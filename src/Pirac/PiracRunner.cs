@@ -24,16 +24,16 @@ namespace Pirac
             WindowManager.ShowWindow(viewModel);
         }
 
-        internal static Func<string, ILogger> Logger { get; set; }
-        internal static IContainer Container { get; set; }
-        internal static IWindowManager WindowManager { get; set; }
-        internal static IScheduler UIScheduler { get; set; }
-        internal static IScheduler BackgroundScheduler { get; set; }
-        internal static IConventionManager ConventionManager { get; set; }
+        public static Func<string, ILogger> Logger { get; private set; }
+        public static IContainer Container { get; private set; }
+        public static IWindowManager WindowManager { get; private set; }
+        public static IScheduler UIScheduler { get; private set; }
+        public static IScheduler BackgroundScheduler { get; private set; }
+        public static IConventionManager ConventionManager { get; private set; }
 
-        internal static ILogger GetLogger(string name) => Logger(name);
+        public static ILogger GetLogger(string name) => Logger(name);
 
-        internal static ILogger GetLogger<TType>() => Logger(typeof(TType).Name);
+        public static ILogger GetLogger<TType>() => Logger(typeof(TType).Name);
 
         internal static object GetViewForViewModel(object viewModel)
         {

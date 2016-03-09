@@ -9,6 +9,9 @@ namespace Pirac
 {
     public class BindableObject : INotifyPropertyChanged, INotifyPropertyChanging, IObservablePropertyChanged, IObservablePropertyChanging, IDisposable
     {
+        private PropertyChangedEventHandler propertyChanged;
+        private PropertyChangingEventHandler propertyChanging;
+
         private long changeNotificationSuppressionCount;
 
         private Subject<PropertyChangedData> changed;
@@ -22,7 +25,7 @@ namespace Pirac
             changed.ObserveOn(SchedulerProvider.UIScheduler)
                 .Subscribe(args =>
                 {
-                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(args.PropertyName));
+                    propertyChanged?.Invoke(this, new PropertyChangedEventArgs(args.PropertyName));
                 });
             Changed = changed.AsObservable();
 
@@ -30,14 +33,62 @@ namespace Pirac
             changing.ObserveOn(SchedulerProvider.UIScheduler)
                 .Subscribe(args =>
                 {
-                    PropertyChanging?.Invoke(this, new PropertyChangingEventArgs(args.PropertyName));
+                    propertyChanging?.Invoke(this, new PropertyChangingEventArgs(args.PropertyName));
                 });
             Changing = changing.AsObservable();
         }
 
-        public event PropertyChangedEventHandler PropertyChanged;
+        event PropertyChangedEventHandler INotifyPropertyChanged.PropertyChanged
+        {
+            add
+            {
+                PropertyChangedEventHandler handler2;
+                var newEvent = propertyChanged;
+                do
+                {
+                    handler2 = newEvent;
+                    var handler3 = (PropertyChangedEventHandler)Delegate.Combine(handler2, value);
+                    Interlocked.CompareExchange(ref propertyChanged, handler3, handler2);
+                } while (newEvent != handler2);
+            }
+            remove
+            {
+                PropertyChangedEventHandler handler2;
+                var newEvent = propertyChanged;
+                do
+                {
+                    handler2 = newEvent;
+                    var handler3 = (PropertyChangedEventHandler)Delegate.Remove(handler2, value);
+                    Interlocked.CompareExchange(ref propertyChanged, handler3, handler2);
+                } while (newEvent != handler2);
+            }
+        }
 
-        public event PropertyChangingEventHandler PropertyChanging;
+        event PropertyChangingEventHandler INotifyPropertyChanging.PropertyChanging
+        {
+            add
+            {
+                PropertyChangingEventHandler handler2;
+                var newEvent = propertyChanging;
+                do
+                {
+                    handler2 = newEvent;
+                    var handler3 = (PropertyChangingEventHandler)Delegate.Combine(handler2, value);
+                    Interlocked.CompareExchange(ref propertyChanging, handler3, handler2);
+                } while (newEvent != handler2);
+            }
+            remove
+            {
+                PropertyChangingEventHandler handler2;
+                var newEvent = propertyChanging;
+                do
+                {
+                    handler2 = newEvent;
+                    var handler3 = (PropertyChangingEventHandler)Delegate.Remove(handler2, value);
+                    Interlocked.CompareExchange(ref propertyChanging, handler3, handler2);
+                } while (newEvent != handler2);
+            }
+        }
 
         public IObservable<PropertyChangedData> Changed { get; }
 
