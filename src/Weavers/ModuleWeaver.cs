@@ -57,7 +57,7 @@ public class ModuleWeaver
         var argumentNullExceptionCtor = ModuleDefinition.ImportReference(ModuleDefinition.ImportReference(typeof(ArgumentNullException)).Resolve().Methods
             .First(m => m.IsConstructor && m.Parameters.Count == 2 && m.Parameters[0].ParameterType.Name == "String" && m.Parameters[1].ParameterType.Name == "String"));
 
-        foreach (var setter in piracContextType.Methods.Where(m => m.IsSetter))
+        foreach (var setter in piracContextType.Methods.Where(m => m.HasBody && m.IsSetter))
         {
             LogInfo("Adding Guard to " + setter.Name);
 
