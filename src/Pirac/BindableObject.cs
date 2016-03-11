@@ -7,92 +7,57 @@ using System.Threading;
 
 namespace Pirac
 {
-    public class BindableObject : INotifyPropertyChanged, INotifyPropertyChanging, IObservablePropertyChanged, IObservablePropertyChanging, IDisposable
+    public partial class BindableObject : IObservablePropertyChanged, IObservablePropertyChanging, IObservableDataErrorInfo, IDisposable
     {
-        private PropertyChangedEventHandler propertyChanged;
-        private PropertyChangingEventHandler propertyChanging;
-
         private long changeNotificationSuppressionCount;
 
         private Subject<PropertyChangedData> changed;
         private Subject<PropertyChangingData> changing;
+        private Subject<DataErrorChanged> errorChanged;
 
         private volatile int disposeSignaled;
 
         public BindableObject()
         {
             changed = new Subject<PropertyChangedData>();
-            changed.ObserveOn(SchedulerProvider.UIScheduler)
+            Changed = changed.AsObservable();
+            Changed.ObserveOn(SchedulerProvider.UIScheduler)
                 .Subscribe(args =>
                 {
                     propertyChanged?.Invoke(this, new PropertyChangedEventArgs(args.PropertyName));
                 });
-            Changed = changed.AsObservable();
 
             changing = new Subject<PropertyChangingData>();
-            changing.ObserveOn(SchedulerProvider.UIScheduler)
+            Changing = changing.AsObservable();
+            Changing.ObserveOn(SchedulerProvider.UIScheduler)
                 .Subscribe(args =>
                 {
                     propertyChanging?.Invoke(this, new PropertyChangingEventArgs(args.PropertyName));
                 });
-            Changing = changing.AsObservable();
-        }
 
-        event PropertyChangedEventHandler INotifyPropertyChanged.PropertyChanged
-        {
-            add
-            {
-                PropertyChangedEventHandler handler2;
-                var newEvent = propertyChanged;
-                do
+            errorChanged = new Subject<DataErrorChanged>();
+            ErrorsChanged = errorChanged.AsObservable();
+            ErrorsChanged.ObserveOn(SchedulerProvider.UIScheduler)
+                .Subscribe(args =>
                 {
-                    handler2 = newEvent;
-                    var handler3 = (PropertyChangedEventHandler)Delegate.Combine(handler2, value);
-                    Interlocked.CompareExchange(ref propertyChanged, handler3, handler2);
-                } while (newEvent != handler2);
-            }
-            remove
-            {
-                PropertyChangedEventHandler handler2;
-                var newEvent = propertyChanged;
-                do
-                {
-                    handler2 = newEvent;
-                    var handler3 = (PropertyChangedEventHandler)Delegate.Remove(handler2, value);
-                    Interlocked.CompareExchange(ref propertyChanged, handler3, handler2);
-                } while (newEvent != handler2);
-            }
-        }
-
-        event PropertyChangingEventHandler INotifyPropertyChanging.PropertyChanging
-        {
-            add
-            {
-                PropertyChangingEventHandler handler2;
-                var newEvent = propertyChanging;
-                do
-                {
-                    handler2 = newEvent;
-                    var handler3 = (PropertyChangingEventHandler)Delegate.Combine(handler2, value);
-                    Interlocked.CompareExchange(ref propertyChanging, handler3, handler2);
-                } while (newEvent != handler2);
-            }
-            remove
-            {
-                PropertyChangingEventHandler handler2;
-                var newEvent = propertyChanging;
-                do
-                {
-                    handler2 = newEvent;
-                    var handler3 = (PropertyChangingEventHandler)Delegate.Remove(handler2, value);
-                    Interlocked.CompareExchange(ref propertyChanging, handler3, handler2);
-                } while (newEvent != handler2);
-            }
+                    if (string.IsNullOrEmpty(args.Error))
+                    {
+                        string value;
+                        errors.TryRemove(args.PropertyName, out value);
+                    }
+                    else
+                    {
+                        errors.AddOrUpdate(args.PropertyName, args.Error, (_, __) => args.Error);
+                    }
+                    errorsChanged?.Invoke(this, new DataErrorsChangedEventArgs(args.PropertyName));
+                });
         }
 
         public IObservable<PropertyChangedData> Changed { get; }
 
         public IObservable<PropertyChangingData> Changing { get; }
+
+        public IObservable<DataErrorChanged> ErrorsChanged { get; }
 
         public bool ChangeNotificationEnabled => Interlocked.Read(ref changeNotificationSuppressionCount) == 0L;
 
@@ -100,18 +65,6 @@ namespace Pirac
         {
             Interlocked.Increment(ref changeNotificationSuppressionCount);
             return Disposable.Create(() => Interlocked.Decrement(ref changeNotificationSuppressionCount));
-        }
-
-        protected void OnPropertyChanged(string propertyName, object before, object after)
-        {
-            if (ChangeNotificationEnabled)
-                changed.OnNext(new PropertyChangedData(propertyName, before, after));
-        }
-
-        protected void OnPropertyChanging(string propertyName, object before)
-        {
-            if (ChangeNotificationEnabled)
-                changing.OnNext(new PropertyChangingData(propertyName, before));
         }
 
         public virtual void Dispose()
@@ -132,6 +85,34 @@ namespace Pirac
                 changed.Dispose();
                 changed = null;
             }
+            if (errorChanged != null)
+            {
+                errorChanged.OnCompleted();
+                errorChanged.Dispose();
+                errorChanged = null;
+            }
+        }
+
+        protected void OnPropertyChanged(string propertyName, object before, object after)
+        {
+            if (ChangeNotificationEnabled)
+                changed.OnNext(new PropertyChangedData(propertyName, before, after));
+        }
+
+        protected void OnPropertyChanging(string propertyName, object before)
+        {
+            if (ChangeNotificationEnabled)
+                changing.OnNext(new PropertyChangingData(propertyName, before));
+        }
+
+        protected void SetDataError(string propertyName, string error)
+        {
+            errorChanged.OnNext(new DataErrorChanged(propertyName, error));
+        }
+
+        protected void ResetDataError(string propertyName)
+        {
+            errorChanged.OnNext(new DataErrorChanged(propertyName, ""));
         }
     }
 }

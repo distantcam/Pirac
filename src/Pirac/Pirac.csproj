@@ -65,16 +65,20 @@
   <ItemGroup>
     <Compile Include="AbstractCommand.cs" />
     <Compile Include="AwaitableAbstractCommand.cs" />
+    <Compile Include="BindableObject.DataError.cs" />
+    <Compile Include="BindableObject.Notification.cs" />
     <Compile Include="Commands\AwaitableDelegateCommand.cs" />
     <Compile Include="Commands\BaseCommand.cs" />
     <Compile Include="Commands\DelegateCommand.cs" />
     <Compile Include="Commands\ObservableCommand.cs" />
+    <Compile Include="DataErrorChanged.cs" />
     <Compile Include="Extensions\HelperExtensions.cs" />
     <Compile Include="Extensions\ObservableExtensions.cs" />
     <Compile Include="IConventionManager.cs" />
     <Compile Include="Internal\ConventionManager.cs" />
     <Compile Include="Internal\WindowManager.cs" />
     <Compile Include="IObservableCommand.cs" />
+    <Compile Include="IObservableDataErrorInfo.cs" />
     <Compile Include="IObservablePropertyChanged.cs" />
     <Compile Include="IObservablePropertyChanging.cs" />
     <Compile Include="IWindowManager.cs" />

@@ -22,17 +22,21 @@ namespace Pirac
         protected AwaitableAbstractCommand() { }
         public abstract System.Threading.Tasks.Task ExecuteAsync(T obj);
     }
-    public class BindableObject : Pirac.IObservablePropertyChanged, Pirac.IObservablePropertyChanging, System.ComponentModel.INotifyPropertyChanged, System.ComponentModel.INotifyPropertyChanging, System.IDisposable
+    public class BindableObject : Pirac.IObservableDataErrorInfo, Pirac.IObservablePropertyChanged, Pirac.IObservablePropertyChanging, System.ComponentModel.INotifyDataErrorInfo, System.ComponentModel.INotifyPropertyChanged, System.ComponentModel.INotifyPropertyChanging, System.IDisposable
     {
         public BindableObject() { }
         public System.IObservable<Pirac.PropertyChangedData> Changed { get; }
         public bool ChangeNotificationEnabled { get; }
         public System.IObservable<Pirac.PropertyChangingData> Changing { get; }
+        public System.IObservable<Pirac.DataErrorChanged> ErrorsChanged { get; }
+        public event System.EventHandler<System.ComponentModel.DataErrorsChangedEventArgs> System.ComponentModel.INotifyDataErrorInfo.ErrorsChanged;
         public event System.ComponentModel.PropertyChangedEventHandler System.ComponentModel.INotifyPropertyChanged.PropertyChanged;
         public event System.ComponentModel.PropertyChangingEventHandler System.ComponentModel.INotifyPropertyChanging.PropertyChanging;
         public virtual void Dispose() { }
         protected void OnPropertyChanged(string propertyName, object before, object after) { }
         protected void OnPropertyChanging(string propertyName, object before) { }
+        protected void ResetDataError(string propertyName) { }
+        protected void SetDataError(string propertyName, string error) { }
         public System.IDisposable SuppressNotifications() { }
     }
     public class static Command
@@ -56,6 +60,12 @@ namespace Pirac
         public static Pirac.IObservableCommand ToCommand(this System.IObservable<Pirac.PropertyChangedData<bool>> canExecuteObservable, System.Func<object, System.Threading.Tasks.Task> action) { }
         public static Pirac.IObservableCommand ToCommand(this System.IObservable<bool> canExecuteObservable, System.Action<object> action) { }
         public static Pirac.IObservableCommand ToCommand(this System.IObservable<Pirac.PropertyChangedData<bool>> canExecuteObservable, System.Action<object> action) { }
+    }
+    public class DataErrorChanged
+    {
+        public DataErrorChanged(string propertyName, string error) { }
+        public string Error { get; }
+        public string PropertyName { get; }
     }
     public interface IAsyncCommand : Pirac.IAsyncCommand<object>, Pirac.IRaiseCanExecuteChanged, System.Windows.Input.ICommand { }
     public interface IAsyncCommand<in T> : Pirac.IRaiseCanExecuteChanged, System.Windows.Input.ICommand
@@ -96,6 +106,10 @@ namespace Pirac
         void Warn(string message);
     }
     public interface IObservableCommand : System.IDisposable, System.Windows.Input.ICommand { }
+    public interface IObservableDataErrorInfo
+    {
+        System.IObservable<Pirac.DataErrorChanged> ErrorsChanged { get; }
+    }
     public interface IObservablePropertyChanged
     {
         System.IObservable<Pirac.PropertyChangedData> Changed { get; }
