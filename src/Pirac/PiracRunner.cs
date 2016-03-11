@@ -6,6 +6,8 @@ namespace Pirac
 {
     public static class PiracRunner
     {
+        private static bool contextSet;
+
         public static void Start<T>(PiracContext context = null)
         {
             context = context ?? new PiracContext();
@@ -17,6 +19,8 @@ namespace Pirac
             BackgroundScheduler = context.BackgroundScheduler;
 
             ConventionManager = new ConventionManager(typeof(T), context.AttachmentConvention, context.ViewConvention, context.ViewModelConvention);
+
+            contextSet = true;
 
             Container.Configure(ConventionManager.FindAllViews(), ConventionManager.FindAllViewModels(), ConventionManager.FindAllAttachments(), ConventionManager);
 
