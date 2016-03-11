@@ -1,0 +1,12 @@
+site_name: Pirac
+site_description: Pirac Documentation
+site_author: Cameron MacFarland
+
+theme: readthedocs
+
+repo_url: https://github.com/distantcam/Pirac/
+
+pages:
+- Home: index.md
+
+copyright: Copyright &copy; 2016 <a href="https://about.me/distantcam">Cameron MacFarland</a>

@@ -1,6 +1,0 @@
-site_name: Pirac
-theme: readthedocs
-repo_url: https://github.com/distantcam/Pirac
-
-pages:
-- Home: index.md
