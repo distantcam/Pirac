@@ -1,4 +1,5 @@
-﻿using Conventional.Conventions;
+﻿using System;
+using Conventional.Conventions;
 
 namespace Pirac.Conventions
 {
@@ -6,13 +7,34 @@ namespace Pirac.Conventions
     {
         public ViewConvention()
         {
-            Must.HaveNameEndWith("View").BeAClass();
+            Must.Pass(t => t.IsClass && (t.Name.EndsWith("View") || t.Name == "MainWindow"), "Name ends with View or is named MainWindow");
 
             Should.BeAConcreteClass();
 
-            BaseName = t => t.Name.Substring(0, t.Name.Length - 4);
+            BaseName = t => t.Name == "MainWindow" ? t.Name : t.Name.Substring(0, t.Name.Length - 4);
 
-            Variants.HaveBaseNameAndEndWith("View");
+            Variants.Add(new DelegateBaseFilter((t, b) =>
+            {
+                if (t.Name == "MainWindow" && b == "MainWindow")
+                    return true;
+
+                return t.Name == b + "View";
+            }));
+        }
+
+        class DelegateBaseFilter : IBaseFilter
+        {
+            private readonly Func<Type, string, bool> predicate;
+
+            public DelegateBaseFilter(Func<Type, string, bool> predicate)
+            {
+                this.predicate = predicate;
+            }
+
+            public bool Matches(Type t, string baseName)
+            {
+                return predicate(t, baseName);
+            }
         }
     }
 }
