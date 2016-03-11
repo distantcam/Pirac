@@ -96,6 +96,7 @@
     <Compile Include="IViewAware.cs" />
     <Compile Include="Internal\UIHelper.cs" />
     <Compile Include="Internal\ViewModelBinder.cs" />
+    <Compile Include="ViewModelConverter.cs" />
     <Compile Include="ViewModelTemplateSelector.cs" />
     <Compile Include="ILogger.cs" />
     <Compile Include="Internal\Container.cs" />

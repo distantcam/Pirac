@@ -218,6 +218,13 @@ namespace Pirac
         public void AttachView(System.Windows.FrameworkElement view) { }
         public void TryClose(System.Nullable<bool> dialogResult = null) { }
     }
+    public class ViewModelConverter : System.Windows.Markup.MarkupExtension, System.Windows.Data.IValueConverter
+    {
+        public ViewModelConverter() { }
+        public object Convert(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) { }
+        public object ConvertBack(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) { }
+        public override object ProvideValue(System.IServiceProvider serviceProvider) { }
+    }
     public class ViewModelTemplateSelector : System.Windows.Markup.MarkupExtension
     {
         public ViewModelTemplateSelector() { }
