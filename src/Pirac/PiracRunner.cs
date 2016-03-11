@@ -1,14 +1,15 @@
 ﻿using System;
 using System.Reactive.Concurrency;
+using System.Reflection;
 using Pirac.Internal;
 
 namespace Pirac
 {
     public static class PiracRunner
     {
-        private static bool contextSet;
+        internal static bool ContextSet;
 
-        public static void Start<T>(PiracContext context = null)
+        internal static void Start(Assembly scanAssembly, PiracContext context = null)
         {
             context = context ?? new PiracContext();
 
@@ -18,11 +19,16 @@ namespace Pirac
             UIScheduler = context.UIScheduler;
             BackgroundScheduler = context.BackgroundScheduler;
 
-            ConventionManager = new ConventionManager(typeof(T), context.AttachmentConvention, context.ViewConvention, context.ViewModelConvention);
+            ContextSet = true;
 
-            contextSet = true;
+            ConventionManager = new ConventionManager(scanAssembly, context.AttachmentConvention, context.ViewConvention, context.ViewModelConvention);
 
             Container.Configure(ConventionManager.FindAllViews(), ConventionManager.FindAllViewModels(), ConventionManager.FindAllAttachments(), ConventionManager);
+        }
+
+        public static void Start<T>(PiracContext context = null)
+        {
+            Start(Assembly.GetCallingAssembly(), context);
 
             var viewModel = Container.GetInstance<T>();
             WindowManager.ShowWindow(viewModel);

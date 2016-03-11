@@ -3,6 +3,7 @@ using System.ComponentModel;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
+using System.Reflection;
 using System.Threading;
 
 namespace Pirac
@@ -19,6 +20,12 @@ namespace Pirac
 
         public BindableObject()
         {
+            if (!PiracRunner.ContextSet)
+            {
+                // JIT Startup
+                PiracRunner.Start(Assembly.GetCallingAssembly());
+            }
+
             changed = new Subject<PropertyChangedData>();
             Changed = changed.AsObservable();
             Changed.ObserveOn(SchedulerProvider.UIScheduler)

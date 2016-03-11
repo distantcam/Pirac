@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using Conventional;
 using Pirac.Extensions;
 
@@ -13,7 +14,7 @@ namespace Pirac.Internal
         readonly Type viewConvention;
         readonly Type viewModelConvention;
 
-        public ConventionManager(Type scanType, Type attachmentConvention, Type viewConvention, Type viewModelConvention)
+        public ConventionManager(Assembly scanAssembly, Type attachmentConvention, Type viewConvention, Type viewModelConvention)
         {
             this.attachmentConvention = attachmentConvention;
             this.viewConvention = viewConvention;
@@ -23,7 +24,7 @@ namespace Pirac.Internal
 
             var builder = new ConventionBuilder();
 
-            builder.Scan(scanType)
+            builder.Scan(scanAssembly)
                 .For(attachmentConvention)
                 .For(viewConvention)
                 .For(viewModelConvention);
