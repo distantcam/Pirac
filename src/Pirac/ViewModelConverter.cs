@@ -18,6 +18,7 @@ namespace Pirac
             return view;
         }
 
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) => DependencyProperty.UnsetValue;
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+            => DependencyProperty.UnsetValue;
     }
 }

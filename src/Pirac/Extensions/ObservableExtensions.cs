@@ -3,7 +3,7 @@ using System.Collections.ObjectModel;
 
 namespace Pirac
 {
-    public static class ObservableExtensions
+    public static partial class PublicExtensions
     {
         public static ObservableCollection<T> ToCollection<T>(this IObservable<T> source)
         {

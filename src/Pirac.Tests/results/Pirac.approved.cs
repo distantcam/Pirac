@@ -1,23 +1,18 @@
 ﻿[assembly: System.Runtime.Versioning.TargetFrameworkAttribute(".NETFramework,Version=v4.5", FrameworkDisplayName=".NET Framework 4.5")]
-
 namespace Pirac
 {
-    
     public abstract class AbstractCommand<T> : Pirac.Commands.BaseCommand<T>, Pirac.ICommand<T>, Pirac.IRaiseCanExecuteChanged, System.Windows.Input.ICommand
-    
     {
         public AbstractCommand(System.Func<T, bool> canExecuteMethod = null) { }
         public abstract void Execute(T obj);
     }
     public abstract class Attachment<T> : Pirac.IAttachment
-    
     {
         protected T viewModel;
         protected Attachment() { }
         protected abstract void OnAttach();
     }
     public abstract class AwaitableAbstractCommand<T> : Pirac.Commands.BaseCommand<T>, Pirac.ICommand<T>, Pirac.IRaiseCanExecuteChanged, System.Windows.Input.ICommand
-    
     {
         protected AwaitableAbstractCommand() { }
         public abstract System.Threading.Tasks.Task ExecuteAsync(T obj);
@@ -39,7 +34,7 @@ namespace Pirac
         protected void SetDataError(string propertyName, string error) { }
         public System.IDisposable SuppressNotifications() { }
     }
-    public class static Command
+    public static class Command
     {
         public static System.Windows.Input.ICommand Create(System.Action executeMethod) { }
         public static System.Windows.Input.ICommand Create(System.Action executeMethod, System.Func<bool> canExecuteMethod) { }
@@ -50,17 +45,6 @@ namespace Pirac
         public static Pirac.IAsyncCommand<T> CreateAsync<T>(System.Func<T, System.Threading.Tasks.Task> executeMethod) { }
         public static Pirac.IAsyncCommand<T> CreateAsync<T>(System.Func<T, System.Threading.Tasks.Task> executeMethod, System.Func<T, bool> canExecuteMethod) { }
     }
-    public class static CommandExtensions
-    {
-        public static System.IDisposable Execute<T>(this System.IObservable<T> observable, System.Windows.Input.ICommand command) { }
-        public static System.IDisposable Execute<T>(this System.IObservable<T> observable, Pirac.ICommand<T> command) { }
-        public static System.IDisposable ExecuteAsync<T>(this System.IObservable<T> observable, Pirac.IAsyncCommand<T> command) { }
-        public static void RaiseCanExecuteChanged(this System.Windows.Input.ICommand command) { }
-        public static Pirac.IObservableCommand ToCommand(this System.IObservable<bool> canExecuteObservable, System.Func<object, System.Threading.Tasks.Task> action) { }
-        public static Pirac.IObservableCommand ToCommand(this System.IObservable<Pirac.PropertyChangedData<bool>> canExecuteObservable, System.Func<object, System.Threading.Tasks.Task> action) { }
-        public static Pirac.IObservableCommand ToCommand(this System.IObservable<bool> canExecuteObservable, System.Action<object> action) { }
-        public static Pirac.IObservableCommand ToCommand(this System.IObservable<Pirac.PropertyChangedData<bool>> canExecuteObservable, System.Action<object> action) { }
-    }
     public class DataErrorChanged
     {
         public DataErrorChanged(string propertyName, string error) { }
@@ -69,7 +53,6 @@ namespace Pirac
     }
     public interface IAsyncCommand : Pirac.IAsyncCommand<object>, Pirac.IRaiseCanExecuteChanged, System.Windows.Input.ICommand { }
     public interface IAsyncCommand<in T> : Pirac.IRaiseCanExecuteChanged, System.Windows.Input.ICommand
-    
     {
         bool CanExecute(T obj);
         System.Threading.Tasks.Task ExecuteAsync(T obj);
@@ -79,7 +62,6 @@ namespace Pirac
         void AttachTo(object obj);
     }
     public interface ICommand<in T> : Pirac.IRaiseCanExecuteChanged, System.Windows.Input.ICommand
-    
     {
         bool CanExecute(T obj);
         void Execute(T obj);
@@ -131,23 +113,6 @@ namespace Pirac
         System.Nullable<bool> ShowDialog(object viewModel);
         void ShowWindow(object viewModel);
     }
-    public class static ObservableChangedExtensions
-    {
-        public static System.IObservable<Pirac.PropertyChangedData<TProperty>> CastPropertyType<TProperty>(this System.IObservable<Pirac.PropertyChangedData> observable) { }
-        public static System.IObservable<Pirac.PropertyChangingData<TProperty>> CastPropertyType<TProperty>(this System.IObservable<Pirac.PropertyChangingData> observable) { }
-        public static System.IObservable<Pirac.PropertyChangedData> ChangedProperties(this Pirac.IObservablePropertyChanged changed, params string[] propertyNames) { }
-        public static System.IObservable<Pirac.PropertyChangedData<TProperty>> ChangedProperties<TProperty>(this Pirac.IObservablePropertyChanged changed, params string[] propertyNames) { }
-        public static System.IObservable<Pirac.PropertyChangedData> ChangedProperty(this Pirac.IObservablePropertyChanged changed, string propertyName) { }
-        public static System.IObservable<Pirac.PropertyChangedData<TProperty>> ChangedProperty<TProperty>(this Pirac.IObservablePropertyChanged changed, string propertyName) { }
-        public static System.IObservable<Pirac.PropertyChangingData> ChangingProperties(this Pirac.IObservablePropertyChanging changing, params string[] propertyNames) { }
-        public static System.IObservable<Pirac.PropertyChangingData<TProperty>> ChangingProperties<TProperty>(this Pirac.IObservablePropertyChanging changing, params string[] propertyNames) { }
-        public static System.IObservable<Pirac.PropertyChangingData> ChangingProperty(this Pirac.IObservablePropertyChanging changing, string propertyName) { }
-        public static System.IObservable<Pirac.PropertyChangingData<TProperty>> ChangingProperty<TProperty>(this Pirac.IObservablePropertyChanging changing, string propertyName) { }
-    }
-    public class static ObservableExtensions
-    {
-        public static System.Collections.ObjectModel.ObservableCollection<T> ToCollection<T>(this System.IObservable<T> source) { }
-    }
     public class PiracContext
     {
         public PiracContext() { }
@@ -160,7 +125,7 @@ namespace Pirac
         public System.Type ViewModelConvention { get; set; }
         public Pirac.IWindowManager WindowManager { get; set; }
     }
-    public class static PiracRunner
+    public static class PiracRunner
     {
         public static Pirac.IContainer Container { get; }
         public static Pirac.IConventionManager ConventionManager { get; }
@@ -178,7 +143,6 @@ namespace Pirac
         public string PropertyName { get; }
     }
     public class PropertyChangedData<TProperty>
-    
     {
         public PropertyChangedData(string propertyName, TProperty before, TProperty after) { }
         public TProperty After { get; }
@@ -192,18 +156,36 @@ namespace Pirac
         public string PropertyName { get; }
     }
     public class PropertyChangingData<TProperty>
-    
     {
         public PropertyChangingData(string propertyName, TProperty before) { }
         public TProperty Before { get; }
         public string PropertyName { get; }
     }
-    public class static ReactiveExtensions
+    public static class PublicExtensions
     {
+        public static System.IObservable<Pirac.PropertyChangedData<TProperty>> CastPropertyType<TProperty>(this System.IObservable<Pirac.PropertyChangedData> observable) { }
+        public static System.IObservable<Pirac.PropertyChangingData<TProperty>> CastPropertyType<TProperty>(this System.IObservable<Pirac.PropertyChangingData> observable) { }
+        public static System.IObservable<Pirac.PropertyChangedData> ChangedProperties(this Pirac.IObservablePropertyChanged changed, params string[] propertyNames) { }
+        public static System.IObservable<Pirac.PropertyChangedData<TProperty>> ChangedProperties<TProperty>(this Pirac.IObservablePropertyChanged changed, params string[] propertyNames) { }
+        public static System.IObservable<Pirac.PropertyChangedData> ChangedProperty(this Pirac.IObservablePropertyChanged changed, string propertyName) { }
+        public static System.IObservable<Pirac.PropertyChangedData<TProperty>> ChangedProperty<TProperty>(this Pirac.IObservablePropertyChanged changed, string propertyName) { }
+        public static System.IObservable<Pirac.PropertyChangingData> ChangingProperties(this Pirac.IObservablePropertyChanging changing, params string[] propertyNames) { }
+        public static System.IObservable<Pirac.PropertyChangingData<TProperty>> ChangingProperties<TProperty>(this Pirac.IObservablePropertyChanging changing, params string[] propertyNames) { }
+        public static System.IObservable<Pirac.PropertyChangingData> ChangingProperty(this Pirac.IObservablePropertyChanging changing, string propertyName) { }
+        public static System.IObservable<Pirac.PropertyChangingData<TProperty>> ChangingProperty<TProperty>(this Pirac.IObservablePropertyChanging changing, string propertyName) { }
+        public static System.IDisposable Execute<T>(this System.IObservable<T> observable, System.Windows.Input.ICommand command) { }
+        public static System.IDisposable Execute<T>(this System.IObservable<T> observable, Pirac.ICommand<T> command) { }
+        public static System.IDisposable ExecuteAsync<T>(this System.IObservable<T> observable, Pirac.IAsyncCommand<T> command) { }
         public static System.IObservable<TSource> ObserveOnPiracBackground<TSource>(this System.IObservable<TSource> source) { }
         public static System.IObservable<TSource> ObserveOnPiracMain<TSource>(this System.IObservable<TSource> source) { }
+        public static void RaiseCanExecuteChanged(this System.Windows.Input.ICommand command) { }
         public static System.IObservable<TSource> SubscribeOnPiracBackground<TSource>(this System.IObservable<TSource> source) { }
         public static System.IObservable<TSource> SubscribeOnPiracMain<TSource>(this System.IObservable<TSource> source) { }
+        public static System.Collections.ObjectModel.ObservableCollection<T> ToCollection<T>(this System.IObservable<T> source) { }
+        public static Pirac.IObservableCommand ToCommand(this System.IObservable<bool> canExecuteObservable, System.Func<object, System.Threading.Tasks.Task> action) { }
+        public static Pirac.IObservableCommand ToCommand(this System.IObservable<Pirac.PropertyChangedData<bool>> canExecuteObservable, System.Func<object, System.Threading.Tasks.Task> action) { }
+        public static Pirac.IObservableCommand ToCommand(this System.IObservable<bool> canExecuteObservable, System.Action<object> action) { }
+        public static Pirac.IObservableCommand ToCommand(this System.IObservable<Pirac.PropertyChangedData<bool>> canExecuteObservable, System.Action<object> action) { }
     }
     public class Screen : Pirac.BindableObject, Pirac.IViewAware
     {
@@ -223,36 +205,22 @@ namespace Pirac
         public ViewModelTemplateSelector() { }
         public override object ProvideValue(System.IServiceProvider serviceProvider) { }
     }
-}
-namespace Pirac.Commands
-{
-    
-    public abstract class BaseCommand<T> : Pirac.IRaiseCanExecuteChanged
-    
-    {
-        public BaseCommand(System.Func<T, bool> canExecuteMethod = null) { }
-        public event System.EventHandler CanExecuteChanged;
-        public bool CanExecute(T parameter) { }
-        public void RaiseCanExecuteChanged() { }
-        protected System.IDisposable StartExecuting() { }
-    }
-}
-namespace Pirac.Internal
-{
-    
-    public class Logger : Pirac.ILogger
-    {
-        public Logger(string name) { }
-        public void Debug(string message) { }
-        public void Error(string message) { }
-        public void Info(string message) { }
-        public void Warn(string message) { }
-    }
     public class ViewNotFoundException : System.Exception
     {
         public ViewNotFoundException() { }
         public ViewNotFoundException(string message) { }
         public ViewNotFoundException(string message, System.Exception inner) { }
         protected ViewNotFoundException(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) { }
+    }
+}
+namespace Pirac.Commands
+{
+    public abstract class BaseCommand<T> : Pirac.IRaiseCanExecuteChanged
+    {
+        public BaseCommand(System.Func<T, bool> canExecuteMethod = null) { }
+        public event System.EventHandler CanExecuteChanged;
+        public bool CanExecute(T parameter) { }
+        public void RaiseCanExecuteChanged() { }
+        protected System.IDisposable StartExecuting() { }
     }
 }

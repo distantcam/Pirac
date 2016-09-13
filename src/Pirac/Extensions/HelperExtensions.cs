@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Pirac.Extensions
+namespace Pirac
 {
     static class HelperExtensions
     {

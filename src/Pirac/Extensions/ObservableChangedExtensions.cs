@@ -4,7 +4,7 @@ using System.Reactive.Linq;
 
 namespace Pirac
 {
-    public static class ObservableChangedExtensions
+    public static partial class PublicExtensions
     {
         public static IObservable<PropertyChangedData> ChangedProperty(this IObservablePropertyChanged changed, string propertyName)
             => changed.Changed.Where(p => p.PropertyName == propertyName);

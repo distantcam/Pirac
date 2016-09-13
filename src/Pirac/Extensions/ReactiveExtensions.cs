@@ -3,7 +3,7 @@ using System.Reactive.Linq;
 
 namespace Pirac
 {
-    public static class ReactiveExtensions
+    public static partial class PublicExtensions
     {
         public static IObservable<TSource> ObserveOnPiracMain<TSource>(this IObservable<TSource> source)
             => source.ObserveOn(PiracRunner.MainScheduler);

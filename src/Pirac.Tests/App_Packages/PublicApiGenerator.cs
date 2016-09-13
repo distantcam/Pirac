@@ -82,7 +82,7 @@ namespace ApiApprover
 
         private static string NormaliseLineEndings(string value)
         {
-            return Regex.Replace(value, @"\r\n|\n\r|\r|\n", Environment.NewLine);
+            return Regex.Replace(value, @"\r\n|\r|\n", Environment.NewLine);
         }
 
         private static bool IsDelegate(TypeDefinition publicType)
@@ -154,8 +154,10 @@ namespace ApiApprover
             gennedClass = Regex.Replace(gennedClass, emptySet, " { set; }", RegexOptions.IgnorePatternWhitespace);
             gennedClass = Regex.Replace(gennedClass, get, " { get; }", RegexOptions.IgnorePatternWhitespace);
             gennedClass = Regex.Replace(gennedClass, set, " { set; }", RegexOptions.IgnorePatternWhitespace);
+            gennedClass = Regex.Replace(gennedClass, "class static", "static class");
             gennedClass = Regex.Replace(gennedClass, @"\s+{\s+}", " { }", RegexOptions.IgnorePatternWhitespace);
             gennedClass = Regex.Replace(gennedClass, @"\)\s+;", ");", RegexOptions.IgnorePatternWhitespace);
+            gennedClass = Regex.Replace(gennedClass, @"^\s+$[\r?\n]*", "", RegexOptions.Multiline);
             return gennedClass;
         }
 

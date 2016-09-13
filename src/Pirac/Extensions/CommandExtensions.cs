@@ -6,7 +6,7 @@ using Pirac.Commands;
 
 namespace Pirac
 {
-    public static class CommandExtensions
+    public static partial class PublicExtensions
     {
         public static void RaiseCanExecuteChanged(this System.Windows.Input.ICommand command)
         {

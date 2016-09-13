@@ -76,6 +76,7 @@
     <Compile Include="Extensions\ObservableExtensions.cs" />
     <Compile Include="IConventionManager.cs" />
     <Compile Include="Internal\ConventionManager.cs" />
+    <Compile Include="ViewNotFoundException.cs" />
     <Compile Include="Internal\WindowManager.cs" />
     <Compile Include="IObservableCommand.cs" />
     <Compile Include="IObservableDataErrorInfo.cs" />
