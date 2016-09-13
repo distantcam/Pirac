@@ -87,8 +87,7 @@
     <Compile Include="PiracContext.cs" />
     <Compile Include="PropertyChangedData.cs" />
     <Compile Include="PropertyChangingData.cs" />
-    <Compile Include="ReactiveExtensions.cs" />
-    <Compile Include="SchedulerProvider.cs" />
+    <Compile Include="Extensions\ReactiveExtensions.cs" />
     <Compile Include="Screen.cs" />
     <Compile Include="ICommand.cs" />
     <Compile Include="BindableObject.cs" />

@@ -27,8 +27,10 @@
         public TProperty Before { get; }
         public TProperty After { get; }
 
-        public static implicit operator PropertyChangedData(PropertyChangedData<TProperty> data) => new PropertyChangedData(data.PropertyName, data.Before, data.After);
+        public static implicit operator PropertyChangedData(PropertyChangedData<TProperty> data)
+            => new PropertyChangedData(data.PropertyName, data.Before, data.After);
 
-        public static explicit operator PropertyChangedData<TProperty>(PropertyChangedData data) => new PropertyChangedData<TProperty>(data.PropertyName, (TProperty)data.Before, (TProperty)data.After);
+        public static explicit operator PropertyChangedData<TProperty>(PropertyChangedData data)
+            => new PropertyChangedData<TProperty>(data.PropertyName, (TProperty)data.Before, (TProperty)data.After);
     }
 }

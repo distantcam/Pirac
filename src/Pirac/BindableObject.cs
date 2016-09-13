@@ -3,7 +3,6 @@ using System.ComponentModel;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
-using System.Reflection;
 using System.Threading;
 
 namespace Pirac
@@ -23,12 +22,12 @@ namespace Pirac
             if (!PiracRunner.ContextSet)
             {
                 // JIT Startup
-                PiracRunner.Start(Assembly.GetCallingAssembly());
+                PiracRunner.SetContext(new PiracContext());
             }
 
             changed = new Subject<PropertyChangedData>();
             Changed = changed.AsObservable();
-            Changed.ObserveOn(SchedulerProvider.UIScheduler)
+            Changed.ObserveOnPiracMain()
                 .Subscribe(args =>
                 {
                     propertyChanged?.Invoke(this, new PropertyChangedEventArgs(args.PropertyName));
@@ -36,7 +35,7 @@ namespace Pirac
 
             changing = new Subject<PropertyChangingData>();
             Changing = changing.AsObservable();
-            Changing.ObserveOn(SchedulerProvider.UIScheduler)
+            Changing.ObserveOnPiracMain()
                 .Subscribe(args =>
                 {
                     propertyChanging?.Invoke(this, new PropertyChangingEventArgs(args.PropertyName));
@@ -44,7 +43,7 @@ namespace Pirac
 
             errorChanged = new Subject<DataErrorChanged>();
             ErrorsChanged = errorChanged.AsObservable();
-            ErrorsChanged.ObserveOn(SchedulerProvider.UIScheduler)
+            ErrorsChanged.ObserveOnPiracMain()
                 .Subscribe(args =>
                 {
                     if (string.IsNullOrEmpty(args.Error))

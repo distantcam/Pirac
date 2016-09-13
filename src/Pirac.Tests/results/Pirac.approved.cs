@@ -155,18 +155,16 @@ namespace Pirac
         public System.Reactive.Concurrency.IScheduler BackgroundScheduler { get; set; }
         public Pirac.IContainer Container { get; set; }
         public System.Func<string, Pirac.ILogger> Logger { get; set; }
-        public System.Reactive.Concurrency.IScheduler UIScheduler { get; set; }
+        public System.Reactive.Concurrency.IScheduler MainScheduler { get; set; }
         public System.Type ViewConvention { get; set; }
         public System.Type ViewModelConvention { get; set; }
         public Pirac.IWindowManager WindowManager { get; set; }
     }
     public class static PiracRunner
     {
-        public static System.Reactive.Concurrency.IScheduler BackgroundScheduler { get; }
         public static Pirac.IContainer Container { get; }
         public static Pirac.IConventionManager ConventionManager { get; }
         public static System.Func<string, Pirac.ILogger> Logger { get; }
-        public static System.Reactive.Concurrency.IScheduler UIScheduler { get; }
         public static Pirac.IWindowManager WindowManager { get; }
         public static Pirac.ILogger GetLogger(string name) { }
         public static Pirac.ILogger GetLogger<TType>() { }
@@ -202,15 +200,10 @@ namespace Pirac
     }
     public class static ReactiveExtensions
     {
-        public static System.IObservable<TSource> ObserveOnBackground<TSource>(this System.IObservable<TSource> source) { }
-        public static System.IObservable<TSource> ObserveOnUI<TSource>(this System.IObservable<TSource> source) { }
-        public static System.IObservable<TSource> SubscribeOnBackground<TSource>(this System.IObservable<TSource> source) { }
-        public static System.IObservable<TSource> SubscribeOnUI<TSource>(this System.IObservable<TSource> source) { }
-    }
-    public class static SchedulerProvider
-    {
-        public static System.Reactive.Concurrency.IScheduler BackgroundScheduler { get; }
-        public static System.Reactive.Concurrency.IScheduler UIScheduler { get; }
+        public static System.IObservable<TSource> ObserveOnPiracBackground<TSource>(this System.IObservable<TSource> source) { }
+        public static System.IObservable<TSource> ObserveOnPiracMain<TSource>(this System.IObservable<TSource> source) { }
+        public static System.IObservable<TSource> SubscribeOnPiracBackground<TSource>(this System.IObservable<TSource> source) { }
+        public static System.IObservable<TSource> SubscribeOnPiracMain<TSource>(this System.IObservable<TSource> source) { }
     }
     public class Screen : Pirac.BindableObject, Pirac.IViewAware
     {
