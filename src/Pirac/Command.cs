@@ -19,16 +19,16 @@ namespace Pirac
         public static ICommand<T> Create<T>(Action<T> executeMethod, Func<T, bool> canExecuteMethod)
             => new DelegateCommand<T>(executeMethod, canExecuteMethod);
 
-        public static IAsyncCommand Create(Func<Task> executeMethod)
+        public static IAsyncCommand CreateAsync(Func<Task> executeMethod)
             => new AwaitableDelegateCommand(_ => executeMethod());
 
-        public static IAsyncCommand Create(Func<Task> executeMethod, Func<bool> canExecuteMethod)
+        public static IAsyncCommand CreateAsync(Func<Task> executeMethod, Func<bool> canExecuteMethod)
             => new AwaitableDelegateCommand(_ => executeMethod(), _ => canExecuteMethod());
 
-        public static IAsyncCommand<T> Create<T>(Func<T, Task> executeMethod)
+        public static IAsyncCommand<T> CreateAsync<T>(Func<T, Task> executeMethod)
             => new AwaitableDelegateCommand<T>(executeMethod);
 
-        public static IAsyncCommand<T> Create<T>(Func<T, Task> executeMethod, Func<T, bool> canExecuteMethod)
+        public static IAsyncCommand<T> CreateAsync<T>(Func<T, Task> executeMethod, Func<T, bool> canExecuteMethod)
             => new AwaitableDelegateCommand<T>(executeMethod, canExecuteMethod);
     }
 }

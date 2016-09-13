@@ -45,10 +45,10 @@ namespace Pirac
         public static System.Windows.Input.ICommand Create(System.Action executeMethod, System.Func<bool> canExecuteMethod) { }
         public static Pirac.ICommand<T> Create<T>(System.Action<T> executeMethod) { }
         public static Pirac.ICommand<T> Create<T>(System.Action<T> executeMethod, System.Func<T, bool> canExecuteMethod) { }
-        public static Pirac.IAsyncCommand Create(System.Func<System.Threading.Tasks.Task> executeMethod) { }
-        public static Pirac.IAsyncCommand Create(System.Func<System.Threading.Tasks.Task> executeMethod, System.Func<bool> canExecuteMethod) { }
-        public static Pirac.IAsyncCommand<T> Create<T>(System.Func<T, System.Threading.Tasks.Task> executeMethod) { }
-        public static Pirac.IAsyncCommand<T> Create<T>(System.Func<T, System.Threading.Tasks.Task> executeMethod, System.Func<T, bool> canExecuteMethod) { }
+        public static Pirac.IAsyncCommand CreateAsync(System.Func<System.Threading.Tasks.Task> executeMethod) { }
+        public static Pirac.IAsyncCommand CreateAsync(System.Func<System.Threading.Tasks.Task> executeMethod, System.Func<bool> canExecuteMethod) { }
+        public static Pirac.IAsyncCommand<T> CreateAsync<T>(System.Func<T, System.Threading.Tasks.Task> executeMethod) { }
+        public static Pirac.IAsyncCommand<T> CreateAsync<T>(System.Func<T, System.Threading.Tasks.Task> executeMethod, System.Func<T, bool> canExecuteMethod) { }
     }
     public class static CommandExtensions
     {
