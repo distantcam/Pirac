@@ -83,7 +83,7 @@
     <Compile Include="IObservablePropertyChanging.cs" />
     <Compile Include="IWindowManager.cs" />
     <Compile Include="LightInject\LightInject.cs" />
-    <Compile Include="ObservableChangedExtensions.cs" />
+    <Compile Include="Extensions\ObservableChangedExtensions.cs" />
     <Compile Include="PiracContext.cs" />
     <Compile Include="PropertyChangedData.cs" />
     <Compile Include="PropertyChangingData.cs" />
