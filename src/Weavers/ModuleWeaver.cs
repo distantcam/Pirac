@@ -19,16 +19,17 @@ public class ModuleWeaver
     private void AddGuardsToPiracRunner()
     {
         var piracRunnerType = ModuleDefinition.Types.First(t => t.Name == "PiracRunner");
-        var contextSetField = piracRunnerType.Fields.First(t => t.Name == "ContextSet");
+        var contextSetField = piracRunnerType.Fields.First(t => t.Name == "contextSet");
         var exceptionCtor = ModuleDefinition.ImportReference(ModuleDefinition.ImportReference(typeof(Exception)).Resolve().Methods.First(m => m.IsConstructor && m.Parameters.Count == 1));
 
         foreach (var method in piracRunnerType.Methods)
         {
             if (!method.HasBody) continue;
 
-            if (!method.IsPublic) continue;
+            if (!method.IsPublic && !method.IsAssembly) continue;
 
-            if (method.Name == "Start") continue;
+            if (method.Name == "Start" ||
+                method.Name == "EnsureContext") continue;
 
             LogInfo("Adding Guard to " + method.Name);
 

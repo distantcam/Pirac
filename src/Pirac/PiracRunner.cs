@@ -1,30 +1,18 @@
 ﻿using System;
 using System.Reactive.Concurrency;
 using System.Reflection;
+using System.Threading;
 using Pirac.Internal;
 
 namespace Pirac
 {
     public static class PiracRunner
     {
-        internal static bool ContextSet;
-
-        internal static void SetContext(PiracContext context)
-        {
-            context = context ?? new PiracContext();
-
-            Logger = context.Logger;
-            Container = context.Container;
-            WindowManager = context.WindowManager;
-            MainScheduler = context.MainScheduler;
-            BackgroundScheduler = context.BackgroundScheduler;
-
-            ContextSet = true;
-        }
+        private static int contextSet;
 
         public static void Start<T>(PiracContext context = null)
         {
-            SetContext(context);
+            EnsureContext(context);
 
             ConventionManager = new ConventionManager(Assembly.GetCallingAssembly(), context.AttachmentConvention, context.ViewConvention, context.ViewModelConvention);
 
@@ -34,12 +22,12 @@ namespace Pirac
             WindowManager.ShowWindow(viewModel);
         }
 
-        public static Func<string, ILogger> Logger { get; private set; }
-        public static IContainer Container { get; private set; }
+        internal static Func<string, ILogger> Logger { get; private set; }
+        internal static IContainer Container { get; private set; }
         public static IWindowManager WindowManager { get; private set; }
         internal static IScheduler MainScheduler { get; private set; }
         internal static IScheduler BackgroundScheduler { get; private set; }
-        public static IConventionManager ConventionManager { get; private set; }
+        internal static IConventionManager ConventionManager { get; private set; }
 
         public static ILogger GetLogger(string name) => Logger(name);
 
@@ -49,6 +37,21 @@ namespace Pirac
         {
             var viewType = ConventionManager.FindView(viewModel);
             return Container.GetInstance(viewType);
+        }
+
+        internal static void EnsureContext(PiracContext context)
+        {
+            // JIT Startup
+            if (Interlocked.Exchange(ref contextSet, 1) == 0)
+            {
+                context = context ?? new PiracContext();
+
+                Logger = context.Logger;
+                Container = context.Container;
+                WindowManager = context.WindowManager;
+                MainScheduler = context.MainScheduler;
+                BackgroundScheduler = context.BackgroundScheduler;
+            }
         }
     }
 }

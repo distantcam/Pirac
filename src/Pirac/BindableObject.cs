@@ -19,11 +19,7 @@ namespace Pirac
 
         public BindableObject()
         {
-            if (!PiracRunner.ContextSet)
-            {
-                // JIT Startup
-                PiracRunner.SetContext(new PiracContext());
-            }
+            PiracRunner.EnsureContext(null);
 
             changed = new Subject<PropertyChangedData>();
             Changed = changed.AsObservable();

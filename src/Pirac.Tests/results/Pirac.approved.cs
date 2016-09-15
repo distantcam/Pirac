@@ -127,9 +127,6 @@ namespace Pirac
     }
     public static class PiracRunner
     {
-        public static Pirac.IContainer Container { get; }
-        public static Pirac.IConventionManager ConventionManager { get; }
-        public static System.Func<string, Pirac.ILogger> Logger { get; }
         public static Pirac.IWindowManager WindowManager { get; }
         public static Pirac.ILogger GetLogger(string name) { }
         public static Pirac.ILogger GetLogger<TType>() { }
@@ -192,6 +189,10 @@ namespace Pirac
         public Screen() { }
         public void AttachView(System.Windows.FrameworkElement view) { }
         public void TryClose(System.Nullable<bool> dialogResult = null) { }
+    }
+    public class ViewModelControl : System.Windows.Controls.ContentControl
+    {
+        public ViewModelControl() { }
     }
     public class ViewModelConverter : System.Windows.Markup.MarkupExtension, System.Windows.Data.IValueConverter
     {

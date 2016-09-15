@@ -58,8 +58,14 @@ namespace ApiApprover
                     .OrderBy(t => t.FullName);
                 foreach (var publicType in publicTypes)
                 {
+                    if (publicType.Namespace == "XamlGeneratedNamespace")
+                    {
+                        continue;
+                    }
+
                     var @namespace = compileUnit.Namespaces.Cast<CodeNamespace>()
                         .FirstOrDefault(n => n.Name == publicType.Namespace);
+
                     if (@namespace == null)
                     {
                         @namespace = new CodeNamespace(publicType.Namespace);
@@ -389,6 +395,7 @@ namespace ApiApprover
             "System.Reflection.AssemblyProductAttribute",
             "System.Reflection.AssemblyTitleAttribute",
             "System.Reflection.AssemblyTrademarkAttribute",
+            "System.Windows.ThemeInfoAttribute",
             "ReleaseDateAttribute"
         };
 
