@@ -162,14 +162,6 @@ namespace Pirac
     {
         public static System.IObservable<Pirac.PropertyChangedData<TProperty>> CastPropertyType<TProperty>(this System.IObservable<Pirac.PropertyChangedData> observable) { }
         public static System.IObservable<Pirac.PropertyChangingData<TProperty>> CastPropertyType<TProperty>(this System.IObservable<Pirac.PropertyChangingData> observable) { }
-        public static System.IObservable<Pirac.PropertyChangedData> ChangedProperties(this Pirac.IObservablePropertyChanged changed, params string[] propertyNames) { }
-        public static System.IObservable<Pirac.PropertyChangedData<TProperty>> ChangedProperties<TProperty>(this Pirac.IObservablePropertyChanged changed, params string[] propertyNames) { }
-        public static System.IObservable<Pirac.PropertyChangedData> ChangedProperty(this Pirac.IObservablePropertyChanged changed, string propertyName) { }
-        public static System.IObservable<Pirac.PropertyChangedData<TProperty>> ChangedProperty<TProperty>(this Pirac.IObservablePropertyChanged changed, string propertyName) { }
-        public static System.IObservable<Pirac.PropertyChangingData> ChangingProperties(this Pirac.IObservablePropertyChanging changing, params string[] propertyNames) { }
-        public static System.IObservable<Pirac.PropertyChangingData<TProperty>> ChangingProperties<TProperty>(this Pirac.IObservablePropertyChanging changing, params string[] propertyNames) { }
-        public static System.IObservable<Pirac.PropertyChangingData> ChangingProperty(this Pirac.IObservablePropertyChanging changing, string propertyName) { }
-        public static System.IObservable<Pirac.PropertyChangingData<TProperty>> ChangingProperty<TProperty>(this Pirac.IObservablePropertyChanging changing, string propertyName) { }
         public static System.IDisposable Execute<T>(this System.IObservable<T> observable, System.Windows.Input.ICommand command) { }
         public static System.IDisposable Execute<T>(this System.IObservable<T> observable, Pirac.ICommand<T> command) { }
         public static System.IDisposable ExecuteAsync<T>(this System.IObservable<T> observable, Pirac.IAsyncCommand<T> command) { }
@@ -183,6 +175,14 @@ namespace Pirac
         public static Pirac.IObservableCommand ToCommand(this System.IObservable<Pirac.PropertyChangedData<bool>> canExecuteObservable, System.Func<object, System.Threading.Tasks.Task> action) { }
         public static Pirac.IObservableCommand ToCommand(this System.IObservable<bool> canExecuteObservable, System.Action<object> action) { }
         public static Pirac.IObservableCommand ToCommand(this System.IObservable<Pirac.PropertyChangedData<bool>> canExecuteObservable, System.Action<object> action) { }
+        public static System.IObservable<Pirac.PropertyChangedData> WhenPropertiesChanged(this Pirac.IObservablePropertyChanged changed, params string[] propertyNames) { }
+        public static System.IObservable<Pirac.PropertyChangedData<TProperty>> WhenPropertiesChanged<TProperty>(this Pirac.IObservablePropertyChanged changed, params string[] propertyNames) { }
+        public static System.IObservable<Pirac.PropertyChangingData> WhenPropertiesChanging(this Pirac.IObservablePropertyChanging changing, params string[] propertyNames) { }
+        public static System.IObservable<Pirac.PropertyChangingData<TProperty>> WhenPropertiesChanging<TProperty>(this Pirac.IObservablePropertyChanging changing, params string[] propertyNames) { }
+        public static System.IObservable<Pirac.PropertyChangedData> WhenPropertyChanged(this Pirac.IObservablePropertyChanged changed, string propertyName) { }
+        public static System.IObservable<Pirac.PropertyChangedData<TProperty>> WhenPropertyChanged<TProperty>(this Pirac.IObservablePropertyChanged changed, string propertyName) { }
+        public static System.IObservable<Pirac.PropertyChangingData> WhenPropertyChanging(this Pirac.IObservablePropertyChanging changing, string propertyName) { }
+        public static System.IObservable<Pirac.PropertyChangingData<TProperty>> WhenPropertyChanging<TProperty>(this Pirac.IObservablePropertyChanging changing, string propertyName) { }
     }
     public class Screen : Pirac.BindableObject, Pirac.IViewAware
     {

@@ -6,28 +6,28 @@ namespace Pirac
 {
     public static partial class PublicExtensions
     {
-        public static IObservable<PropertyChangedData> ChangedProperty(this IObservablePropertyChanged changed, string propertyName)
+        public static IObservable<PropertyChangedData> WhenPropertyChanged(this IObservablePropertyChanged changed, string propertyName)
             => changed.Changed.Where(p => p.PropertyName == propertyName);
 
-        public static IObservable<PropertyChangedData<TProperty>> ChangedProperty<TProperty>(this IObservablePropertyChanged changed, string propertyName)
+        public static IObservable<PropertyChangedData<TProperty>> WhenPropertyChanged<TProperty>(this IObservablePropertyChanged changed, string propertyName)
             => changed.Changed.Where(p => p.PropertyName == propertyName).Select(data => (PropertyChangedData<TProperty>)data);
 
-        public static IObservable<PropertyChangedData> ChangedProperties(this IObservablePropertyChanged changed, params string[] propertyNames)
+        public static IObservable<PropertyChangedData> WhenPropertiesChanged(this IObservablePropertyChanged changed, params string[] propertyNames)
             => changed.Changed.Where(p => propertyNames.Contains(p.PropertyName));
 
-        public static IObservable<PropertyChangedData<TProperty>> ChangedProperties<TProperty>(this IObservablePropertyChanged changed, params string[] propertyNames)
+        public static IObservable<PropertyChangedData<TProperty>> WhenPropertiesChanged<TProperty>(this IObservablePropertyChanged changed, params string[] propertyNames)
             => changed.Changed.Where(p => propertyNames.Contains(p.PropertyName)).Select(data => (PropertyChangedData<TProperty>)data);
 
-        public static IObservable<PropertyChangingData> ChangingProperty(this IObservablePropertyChanging changing, string propertyName)
+        public static IObservable<PropertyChangingData> WhenPropertyChanging(this IObservablePropertyChanging changing, string propertyName)
             => changing.Changing.Where(p => p.PropertyName == propertyName);
 
-        public static IObservable<PropertyChangingData<TProperty>> ChangingProperty<TProperty>(this IObservablePropertyChanging changing, string propertyName)
+        public static IObservable<PropertyChangingData<TProperty>> WhenPropertyChanging<TProperty>(this IObservablePropertyChanging changing, string propertyName)
             => changing.Changing.Where(p => p.PropertyName == propertyName).Select(data => (PropertyChangingData<TProperty>)data);
 
-        public static IObservable<PropertyChangingData> ChangingProperties(this IObservablePropertyChanging changing, params string[] propertyNames)
+        public static IObservable<PropertyChangingData> WhenPropertiesChanging(this IObservablePropertyChanging changing, params string[] propertyNames)
             => changing.Changing.Where(p => propertyNames.Contains(p.PropertyName));
 
-        public static IObservable<PropertyChangingData<TProperty>> ChangingProperties<TProperty>(this IObservablePropertyChanging changing, params string[] propertyNames)
+        public static IObservable<PropertyChangingData<TProperty>> WhenPropertiesChanging<TProperty>(this IObservablePropertyChanging changing, params string[] propertyNames)
             => changing.Changing.Where(p => propertyNames.Contains(p.PropertyName)).Select(data => (PropertyChangingData<TProperty>)data);
 
         public static IObservable<PropertyChangedData<TProperty>> CastPropertyType<TProperty>(this IObservable<PropertyChangedData> observable)
