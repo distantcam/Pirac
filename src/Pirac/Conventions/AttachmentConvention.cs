@@ -1,18 +1,35 @@
-﻿using Conventional.Conventions;
+﻿using System;
+using System.Linq;
 
 namespace Pirac.Conventions
 {
-    internal class AttachmentConvention : Convention
+    internal class AttachmentConvention : IConvention
     {
-        public AttachmentConvention()
+        public bool Filter(Type type)
         {
-            Must.HaveNameEndWith("Attachment");
+            return type.Name.EndsWith("Attachment");
+        }
 
-            Should.BeAConcreteClass().Implement<IAttachment>();
+        public void Verify(Type type)
+        {
+            if (type.IsAbstract)
+            {
+                throw new ConventionBrokenException($"Attachment type '{type}' must be a concrete class.");
+            }
+            if (type.GetInterfaces().Any(t => t == typeof(IAttachment)))
+            {
+                throw new ConventionBrokenException($"Attachment type '{type}' must implement '{typeof(IAttachment)}'.");
+            }
+        }
 
-            BaseName = t => t.Name.Substring(0, t.Name.Length - 10);
+        public string BaseName(Type type)
+        {
+            return type.Name.Substring(0, type.Name.Length - 10);
+        }
 
-            Variants.HaveBaseNameAndEndWith("Attachment");
+        public bool IsVariant(Type type, string basename)
+        {
+            return type.Name == basename + "Attachment";
         }
     }
 }

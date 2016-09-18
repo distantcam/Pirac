@@ -1,40 +1,36 @@
 ﻿using System;
-using Conventional.Conventions;
 
 namespace Pirac.Conventions
 {
-    internal class ViewConvention : Convention
+    internal class ViewConvention : IConvention
     {
-        public ViewConvention()
+        public bool Filter(Type type)
         {
-            Must.Pass(t => t.IsClass && (t.Name.EndsWith("View") || t.Name == "MainWindow"), "Name ends with View or is named MainWindow");
-
-            Should.BeAConcreteClass();
-
-            BaseName = t => t.Name == "MainWindow" ? t.Name : t.Name.Substring(0, t.Name.Length - 4);
-
-            Variants.Add(new DelegateBaseFilter((t, b) =>
-            {
-                if (t.Name == "MainWindow" && b == "MainWindow")
-                    return true;
-
-                return t.Name == b + "View";
-            }));
+            return (type.Name.EndsWith("View") || type.Name.EndsWith("MainWindow"))
+                && type.IsClass;
         }
 
-        class DelegateBaseFilter : IBaseFilter
+        public void Verify(Type type)
         {
-            private readonly Func<Type, string, bool> predicate;
-
-            public DelegateBaseFilter(Func<Type, string, bool> predicate)
+            if (type.IsAbstract)
             {
-                this.predicate = predicate;
+                throw new ConventionBrokenException($"View type '{type}' must be a concrete class.");
+            }
+        }
+
+        public string BaseName(Type type)
+        {
+            return type.Name == "MainWindow" ? type.Name : type.Name.Substring(0, type.Name.Length - 4);
+        }
+
+        public bool IsVariant(Type type, string basename)
+        {
+            if (type.Name == "MainWindow" && basename == "MainWindow")
+            {
+                return true;
             }
 
-            public bool Matches(Type t, string baseName)
-            {
-                return predicate(t, baseName);
-            }
+            return type.Name == basename + "View";
         }
     }
 }

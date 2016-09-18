@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Reactive.Concurrency;
 using System.Windows.Threading;
+using Pirac.Conventions;
 using Pirac.Internal;
 
 namespace Pirac
@@ -20,8 +21,8 @@ namespace Pirac
         public IWindowManager WindowManager { get; set; } = new WindowManager();
         public IScheduler MainScheduler { get; set; }
         public IScheduler BackgroundScheduler { get; set; } = TaskPoolScheduler.Default;
-        public Type AttachmentConvention { get; set; } = typeof(Conventions.AttachmentConvention);
-        public Type ViewConvention { get; set; } = typeof(Conventions.ViewConvention);
-        public Type ViewModelConvention { get; set; } = typeof(Conventions.ViewModelConvention);
+        public IConvention AttachmentConvention { get; set; } = new AttachmentConvention();
+        public IConvention ViewConvention { get; set; } = new ViewConvention();
+        public IConvention ViewModelConvention { get; set; } = new ViewModelConvention();
     }
 }

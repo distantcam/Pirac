@@ -19,7 +19,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;NET45</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
@@ -36,9 +36,6 @@
     <NuCakeVersionFieldCount>4</NuCakeVersionFieldCount>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Conventional">
-      <HintPath>..\packages\Conventional.2.0.0.36\lib\net40\Conventional.dll</HintPath>
-    </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="System" />
@@ -76,6 +73,9 @@
     <Compile Include="Commands\BaseCommand.cs" />
     <Compile Include="Commands\DelegateCommand.cs" />
     <Compile Include="Commands\ObservableCommand.cs" />
+    <Compile Include="Conventions\ConventionBrokenException.cs" />
+    <Compile Include="Conventions\IConvention.cs" />
+    <Compile Include="LightInject\LightInject.cs" />
     <Compile Include="ViewModelControl.cs" />
     <Compile Include="DataErrorChanged.cs" />
     <Compile Include="Extensions\HelperExtensions.cs" />
@@ -89,7 +89,6 @@
     <Compile Include="IObservablePropertyChanged.cs" />
     <Compile Include="IObservablePropertyChanging.cs" />
     <Compile Include="IWindowManager.cs" />
-    <Compile Include="LightInject\LightInject.cs" />
     <Compile Include="Extensions\ObservableChangedExtensions.cs" />
     <Compile Include="PiracContext.cs" />
     <Compile Include="PropertyChangedData.cs" />

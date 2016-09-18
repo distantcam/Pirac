@@ -12,6 +12,8 @@ namespace Pirac
 
         public static void Start<T>(PiracContext context = null)
         {
+            context = context ?? new PiracContext();
+
             EnsureContext(context);
 
             ConventionManager = new ConventionManager(Assembly.GetCallingAssembly(), context.AttachmentConvention, context.ViewConvention, context.ViewModelConvention);

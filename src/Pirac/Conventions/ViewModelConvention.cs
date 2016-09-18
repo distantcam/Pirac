@@ -1,19 +1,41 @@
-﻿using System.ComponentModel;
-using Conventional.Conventions;
+﻿using System;
+using System.ComponentModel;
+using System.Linq;
 
 namespace Pirac.Conventions
 {
-    internal class ViewModelConvention : Convention
+    internal class ViewModelConvention : IConvention
     {
-        public ViewModelConvention()
+        public bool Filter(Type type)
         {
-            Must.HaveNameEndWith("ViewModel").BeAClass();
+            return type.Name.EndsWith("ViewModel")
+                && type.IsClass;
+        }
 
-            Should.BeAConcreteClass().Implement<INotifyPropertyChanged>();
+        public void Verify(Type type)
+        {
+            if (type.IsAbstract)
+            {
+                throw new ConventionBrokenException($"ViewModel type '{type}' must be a concrete class.");
+            }
+            if (!type.GetInterfaces().Any(t => t == typeof(INotifyPropertyChanged)))
+            {
+                throw new ConventionBrokenException($"ViewModel type '{type}' must implement '{typeof(INotifyPropertyChanged)}'.");
+            }
+            if (!type.GetInterfaces().Any(t => t == typeof(INotifyPropertyChanging)))
+            {
+                throw new ConventionBrokenException($"ViewModel type '{type}' must implement '{typeof(INotifyPropertyChanging)}'.");
+            }
+        }
 
-            BaseName = t => t.Name.Substring(0, t.Name.Length - 9);
+        public string BaseName(Type type)
+        {
+            return type.Name.Substring(0, type.Name.Length - 9);
+        }
 
-            Variants.HaveBaseNameAndEndWith("ViewModel");
+        public bool IsVariant(Type type, string basename)
+        {
+            return type.Name == basename + "ViewModel";
         }
     }
 }
