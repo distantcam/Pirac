@@ -116,13 +116,13 @@ namespace Pirac
     public class PiracContext
     {
         public PiracContext() { }
-        public System.Type AttachmentConvention { get; set; }
+        public Pirac.Conventions.IConvention AttachmentConvention { get; set; }
         public System.Reactive.Concurrency.IScheduler BackgroundScheduler { get; set; }
         public Pirac.IContainer Container { get; set; }
         public System.Func<string, Pirac.ILogger> Logger { get; set; }
         public System.Reactive.Concurrency.IScheduler MainScheduler { get; set; }
-        public System.Type ViewConvention { get; set; }
-        public System.Type ViewModelConvention { get; set; }
+        public Pirac.Conventions.IConvention ViewConvention { get; set; }
+        public Pirac.Conventions.IConvention ViewModelConvention { get; set; }
         public Pirac.IWindowManager WindowManager { get; set; }
     }
     public static class PiracRunner
@@ -223,5 +223,22 @@ namespace Pirac.Commands
         public bool CanExecute(T parameter) { }
         public void RaiseCanExecuteChanged() { }
         protected System.IDisposable StartExecuting() { }
+    }
+}
+namespace Pirac.Conventions
+{
+    public class ConventionBrokenException : System.Exception
+    {
+        public ConventionBrokenException() { }
+        public ConventionBrokenException(string message) { }
+        public ConventionBrokenException(string message, System.Exception inner) { }
+        protected ConventionBrokenException(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) { }
+    }
+    public interface IConvention
+    {
+        string BaseName(System.Type type);
+        bool Filter(System.Type type);
+        bool IsVariant(System.Type type, string basename);
+        void Verify(System.Type type);
     }
 }
