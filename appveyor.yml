@@ -12,9 +12,11 @@ build:
   parallel: true
   project: src\Pirac.sln
 
-test:
-  assemblies:
-    - src\Pirac.Tests\bin\Release\Pirac.Tests.dll
+before_test:
+  - ps: cd src\Pirac.Tests\bin\Release
+
+test_script:
+  - nunit3-console Pirac.Tests.dll --result=myresults.xml;format=AppVeyor
 
 artifacts:
   - path: src\artifacts\*.nupkg
