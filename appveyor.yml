@@ -12,5 +12,9 @@ build:
   parallel: true
   project: src\Pirac.sln
 
+test:
+  assemblies:
+    - src\Pirac.Tests\bin\Release\Pirac.Tests.dll
+
 artifacts:
   - path: src\artifacts\*.nupkg
