@@ -1,4 +1,5 @@
 ﻿using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Windows;
 
 // General Information about an assembly is controlled through the following
@@ -7,6 +8,7 @@ using System.Windows;
 [assembly: AssemblyTitle("Pirac")]
 [assembly: AssemblyDescription("Yet another MVVM Framework.")]
 [assembly: AssemblyCompany("Cameron MacFarland")]
+[assembly: InternalsVisibleTo("Pirac.Tests")]
 [assembly: ThemeInfo(
     ResourceDictionaryLocation.None, //where theme specific resource dictionaries are located
                                      //(used if a resource is not found in the page,

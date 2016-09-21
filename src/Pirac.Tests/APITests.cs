@@ -1,15 +1,16 @@
 ﻿using ApiApprover;
 using ApprovalTests.Namers;
 using ApprovalTests.Reporters;
-using Xunit;
+using NUnit.Framework;
 
 namespace Pirac.Tests
 {
     [UseReporter(typeof(DiffReporter))]
     [UseApprovalSubdirectory("results")]
+    [TestFixture]
     public class APITests
     {
-        [Fact]
+        [Test]
         public void PublicAPI()
         {
             PublicApiApprover.ApprovePublicApi("Pirac.dll");
