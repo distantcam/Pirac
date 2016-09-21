@@ -30,6 +30,7 @@ namespace Pirac
         internal static IScheduler MainScheduler { get; private set; }
         internal static IScheduler BackgroundScheduler { get; private set; }
         internal static IConventionManager ConventionManager { get; private set; }
+        internal static bool IsContextSet => contextSet == 1;
 
         public static ILogger GetLogger(string name) => Logger(name);
 
