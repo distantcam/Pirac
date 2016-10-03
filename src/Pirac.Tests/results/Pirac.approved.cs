@@ -105,6 +105,12 @@ namespace Pirac
     {
         void RaiseCanExecuteChanged();
     }
+    public interface IScreen
+    {
+        void Activate();
+        bool CanClose();
+        void Deactivate(bool close);
+    }
     public interface IViewAware
     {
         void AttachView(System.Windows.FrameworkElement view);
@@ -185,10 +191,27 @@ namespace Pirac
         public static System.IObservable<Pirac.PropertyChangingData> WhenPropertyChanging(this Pirac.IObservablePropertyChanging changing, string propertyName) { }
         public static System.IObservable<Pirac.PropertyChangingData<TProperty>> WhenPropertyChanging<TProperty>(this Pirac.IObservablePropertyChanging changing, string propertyName) { }
     }
-    public class Screen : Pirac.BindableObject, Pirac.IViewAware
+    public class Screen : Pirac.ViewAware, Pirac.IScreen
     {
         public Screen() { }
-        public void AttachView(System.Windows.FrameworkElement view) { }
+        public bool IsActive { get; }
+        public bool IsInitialized { get; }
+        public System.Collections.Generic.IList<Pirac.IScreen> Screens { get; }
+        public void Activate() { }
+        protected virtual void ActivateChildren() { }
+        protected void AddScreens(params Pirac.IScreen[] screens) { }
+        public void Deactivate(bool close) { }
+        protected virtual void DeactivateChildren(bool close) { }
+        protected virtual void OnActivate(bool wasInitialized) { }
+        protected virtual void OnDeactivate(bool close) { }
+        protected virtual void OnInitialize() { }
+    }
+    public class ViewAware : Pirac.BindableObject, Pirac.IViewAware
+    {
+        public ViewAware() { }
+        protected virtual bool CanClose() { }
+        protected virtual void OnViewAttached(System.Windows.FrameworkElement view) { }
+        protected virtual void OnViewLoaded(System.Windows.FrameworkElement view) { }
         public void TryClose(System.Nullable<bool> dialogResult = null) { }
     }
     public class ViewModelControl : System.Windows.Controls.ContentControl

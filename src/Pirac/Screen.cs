@@ -1,57 +1,135 @@
-﻿using System;
-using System.Windows;
+﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
 
 namespace Pirac
 {
-    public class Screen : BindableObject, IViewAware
+    public class Screen : ViewAware, IScreen
     {
-        private WeakReference<FrameworkElement> view;
+        static readonly ILogger Log = PiracRunner.GetLogger<Screen>();
+        bool isActive;
+        bool isInitialized;
 
-        public void AttachView(FrameworkElement view)
+        public IList<IScreen> Screens { get; } = new ObservableCollection<IScreen>();
+
+        public bool IsActive
         {
-            this.view = new WeakReference<FrameworkElement>(view);
+            get { return isActive; }
+            private set
+            {
+                if (isActive == value)
+                    return;
+
+                var before = isActive;
+                OnPropertyChanging(nameof(IsActive), before);
+                isActive = value;
+                var after = isActive;
+                OnPropertyChanged(nameof(IsActive), before, after);
+            }
         }
 
-        public void TryClose(bool? dialogResult = null)
+        public bool IsInitialized
         {
-            FrameworkElement v;
-            if (view != null && view.TryGetTarget(out v))
+            get { return isInitialized; }
+            private set
             {
-                TryClose(this, v, dialogResult);
-            }
-            else
-            {
-                view = null;
+                if (isInitialized == value)
+                    return;
+
+                var before = isInitialized;
+                OnPropertyChanging(nameof(IsInitialized), before);
+                isInitialized = value;
+                var after = isInitialized;
+                OnPropertyChanged(nameof(IsInitialized), before, after);
             }
         }
 
-        private static void TryClose(object viewModel, FrameworkElement view, bool? dialogResult)
+        public void Activate()
         {
-            var viewType = view.GetType();
-            var closeMethod = viewType.GetMethod("Close");
-
-            if (closeMethod != null)
+            if (IsActive)
             {
-                var isClosed = false;
-                if (dialogResult != null)
-                {
-                    var resultProperty = viewType.GetProperty("DialogResult");
-                    if (resultProperty != null)
-                    {
-                        resultProperty.SetValue(view, dialogResult, null);
-                        isClosed = true;
-                    }
-                }
+                return;
+            }
 
-                if (!isClosed)
+            var initialized = false;
+
+            if (!IsInitialized)
+            {
+                IsInitialized = initialized = true;
+                OnInitialize();
+            }
+
+            ActivateChildren();
+
+            IsActive = true;
+            Log.Info($"Activating {this}.");
+
+            OnActivate(initialized);
+        }
+
+        public void Deactivate(bool close)
+        {
+            if (IsActive || (IsInitialized && close))
+            {
+                DeactivateChildren(close);
+
+                IsActive = false;
+                Log.Info($"Deactivating {this}.");
+
+                OnDeactivate(close);
+
+                if (close)
                 {
-                    closeMethod.Invoke(view, null);
+                    TryClose();
+                    Log.Info($"Closed {this}.");
                 }
             }
-            else
+        }
+
+        protected void AddScreens(params IScreen[] screens)
+        {
+            foreach (var screen in screens)
             {
-                PiracRunner.GetLogger<Screen>().Warn("TryClose requires a view with a Close method.");
+                Screens.Add(screen);
             }
+        }
+
+        protected virtual void ActivateChildren()
+        {
+            foreach (var screen in Screens)
+            {
+                screen.Activate();
+            }
+        }
+
+        protected virtual void DeactivateChildren(bool close)
+        {
+            foreach (var screen in Screens)
+            {
+                screen.Deactivate(close);
+            }
+        }
+
+        protected virtual void OnInitialize()
+        {
+        }
+
+        protected virtual void OnActivate(bool wasInitialized)
+        {
+        }
+
+        protected virtual void OnDeactivate(bool close)
+        {
+        }
+
+        bool IScreen.CanClose()
+        {
+            foreach (var screen in Screens)
+            {
+                if (!screen.CanClose())
+                    return false;
+            }
+
+            return CanClose();
         }
     }
 }

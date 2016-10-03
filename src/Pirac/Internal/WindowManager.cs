@@ -1,3 +1,5 @@
+using System;
+using System.ComponentModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -34,6 +36,12 @@ namespace Pirac.Internal
             var view = EnsureWindow(viewModel, PiracRunner.GetViewForViewModel(viewModel), isDialog);
 
             ViewModelBinder.Bind(view, viewModel);
+
+            var screen = viewModel as IScreen;
+            if (screen != null)
+            {
+                new WindowConductor(screen, view);
+            }
 
             return view;
         }
@@ -106,6 +114,37 @@ namespace Pirac.Internal
             }
 
             return page;
+        }
+
+        class WindowConductor
+        {
+            IScreen screen;
+            Window window;
+
+            public WindowConductor(IScreen screen, Window window)
+            {
+                this.screen = screen;
+                this.window = window;
+
+                screen.Activate();
+
+                window.Closing += Closing;
+                window.Closed += Closed;
+            }
+
+            void Closing(object sender, CancelEventArgs e)
+            {
+                e.Cancel = !screen.CanClose();
+            }
+
+            void Closed(object sender, EventArgs e)
+            {
+                var window = (Window)sender;
+                window.Closing -= Closing;
+                window.Closed -= Closed;
+
+                screen.Deactivate(true);
+            }
         }
     }
 }

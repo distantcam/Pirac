@@ -75,7 +75,9 @@
     <Compile Include="Commands\ObservableCommand.cs" />
     <Compile Include="Conventions\ConventionBrokenException.cs" />
     <Compile Include="Conventions\IConvention.cs" />
+    <Compile Include="IScreen.cs" />
     <Compile Include="LightInject\LightInject.cs" />
+    <Compile Include="ViewAware.cs" />
     <Compile Include="ViewModelControl.cs" />
     <Compile Include="DataErrorChanged.cs" />
     <Compile Include="Extensions\HelperExtensions.cs" />
