@@ -17,11 +17,14 @@ namespace Pirac.Commands
         {
             this.action = action;
 
-            canExecuteSubscription = canExecuteObservable.Subscribe(b =>
-            {
-                latest = b;
-                RaiseCanExecuteChanged();
-            });
+            canExecuteSubscription = canExecuteObservable
+                .Distinct()
+                .ObserveOnPiracMain()
+                .Subscribe(b =>
+                {
+                    latest = b;
+                    RaiseCanExecuteChanged();
+                });
         }
 
         public event EventHandler CanExecuteChanged;
