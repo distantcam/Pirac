@@ -56,7 +56,18 @@ namespace Pirac.Tests
         {
             if (method.ContainsGenericParameters)
             {
-                method = method.MakeGenericMethod(typeof(PiracRunnerTests));
+                if (method.Name == "GetLogger")
+                    method = method.MakeGenericMethod(typeof(PiracRunnerTests));
+                else if (method.Name == "Start")
+                    method = method.MakeGenericMethod(typeof(TestViewModel));
+                else
+                    throw new NotImplementedException(method.Name);
+            }
+
+            if (method.Name == "Start")
+            {
+                method.Invoke(null, new object[] { new TestPiracContext() });
+                return;
             }
 
             if (method.GetParameters().Length == 0)
@@ -81,12 +92,13 @@ namespace Pirac.Tests
         {
             return method.Name == "Start" ||
                 method.Name == "get_IsContextSet" ||
+                method.Name == "GetLogger" ||
                 method.Name == "EnsureContext";
         }
 
         private static bool IsGuardedMethods(MethodInfo method)
         {
-            if (!IsInternalMethod(method))
+            if (!method.IsPublic && !IsInternalMethod(method))
                 return false;
 
             return !IsNamedMethod(method);
@@ -94,7 +106,7 @@ namespace Pirac.Tests
 
         private static bool IsUnguardedMethods(MethodInfo method)
         {
-            if (!IsInternalMethod(method))
+            if (!method.IsPublic && !IsInternalMethod(method))
                 return false;
 
             return IsNamedMethod(method);

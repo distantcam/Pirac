@@ -204,12 +204,12 @@ namespace Pirac
     public class ViewModelBase : Pirac.HasViewBase, Pirac.IActivatable
     {
         public ViewModelBase() { }
-        public System.Collections.Generic.IList<Pirac.IActivatable> Children { get; }
+        public System.Collections.Generic.IReadOnlyList<Pirac.IActivatable> Children { get; }
         public bool IsActive { get; }
         public bool IsInitialized { get; }
         public void Activate() { }
         protected virtual void ActivateChildren() { }
-        protected void AddScreens(params Pirac.IActivatable[] viewModels) { }
+        protected void AddChildren(params Pirac.IActivatable[] viewModels) { }
         public void Deactivate(bool close) { }
         protected virtual void DeactivateChildren(bool close) { }
         protected virtual void OnActivate(bool wasInitialized) { }

@@ -20,7 +20,7 @@
         }
     }
 
-    public class TestViewModel : BindableObject { }
+    public class TestViewModel : ViewModelBase { }
 
     public class TestView { }
 }

@@ -32,9 +32,17 @@ namespace Pirac
         internal static IConventionManager ConventionManager { get; private set; }
         internal static bool IsContextSet => contextSet == 1;
 
-        public static ILogger GetLogger(string name) => Logger(name);
+        public static ILogger GetLogger(string name)
+        {
+            EnsureContext(null);
+            return Logger(name);
+        }
 
-        public static ILogger GetLogger<TType>() => Logger(typeof(TType).Name);
+        public static ILogger GetLogger<TType>()
+        {
+            EnsureContext(null);
+            return Logger(typeof(TType).Name);
+        }
 
         internal static object GetViewForViewModel(object viewModel)
         {

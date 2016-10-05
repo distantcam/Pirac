@@ -9,8 +9,9 @@ namespace Pirac
         static readonly ILogger Log = PiracRunner.GetLogger<ViewModelBase>();
         bool isActive;
         bool isInitialized;
+        ObservableCollection<IActivatable> children = new ObservableCollection<IActivatable>();
 
-        public IList<IActivatable> Children { get; } = new ObservableCollection<IActivatable>();
+        public IReadOnlyList<IActivatable> Children => children;
 
         public bool IsActive
         {
@@ -86,11 +87,11 @@ namespace Pirac
             }
         }
 
-        protected void AddScreens(params IActivatable[] viewModels)
+        protected void AddChildren(params IActivatable[] viewModels)
         {
             foreach (var screen in viewModels.Except(Children))
             {
-                Children.Add(screen);
+                children.Add(screen);
             }
         }
 

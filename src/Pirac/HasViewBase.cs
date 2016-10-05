@@ -19,8 +19,8 @@ namespace Pirac
 
         public FrameworkElement GetView()
         {
-            FrameworkElement v;
-            view.TryGetTarget(out v);
+            FrameworkElement v = null;
+            view?.TryGetTarget(out v);
             return v;
         }
 
