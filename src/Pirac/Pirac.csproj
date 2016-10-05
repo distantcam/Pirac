@@ -75,9 +75,9 @@
     <Compile Include="Commands\ObservableCommand.cs" />
     <Compile Include="Conventions\ConventionBrokenException.cs" />
     <Compile Include="Conventions\IConvention.cs" />
-    <Compile Include="IScreen.cs" />
+    <Compile Include="IActivatable.cs" />
     <Compile Include="LightInject\LightInject.cs" />
-    <Compile Include="ViewAware.cs" />
+    <Compile Include="HasViewBase.cs" />
     <Compile Include="ViewModelControl.cs" />
     <Compile Include="DataErrorChanged.cs" />
     <Compile Include="Extensions\HelperExtensions.cs" />
@@ -96,11 +96,11 @@
     <Compile Include="PropertyChangedData.cs" />
     <Compile Include="PropertyChangingData.cs" />
     <Compile Include="Extensions\ReactiveExtensions.cs" />
-    <Compile Include="Screen.cs" />
+    <Compile Include="ViewModelBase.cs" />
     <Compile Include="ICommand.cs" />
     <Compile Include="BindableObject.cs" />
     <Compile Include="Attachment.cs" />
-    <Compile Include="IViewAware.cs" />
+    <Compile Include="IHaveView.cs" />
     <Compile Include="Internal\UIHelper.cs" />
     <Compile Include="Internal\ViewModelBinder.cs" />
     <Compile Include="ViewModelConverter.cs" />

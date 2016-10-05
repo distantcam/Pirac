@@ -37,7 +37,7 @@ namespace Pirac.Internal
 
             ViewModelBinder.Bind(view, viewModel);
 
-            var screen = viewModel as IScreen;
+            var screen = viewModel as IActivatable;
             if (screen != null)
             {
                 new WindowConductor(screen, view);
@@ -118,10 +118,10 @@ namespace Pirac.Internal
 
         class WindowConductor
         {
-            IScreen screen;
+            IActivatable screen;
             Window window;
 
-            public WindowConductor(IScreen screen, Window window)
+            public WindowConductor(IActivatable screen, Window window)
             {
                 this.screen = screen;
                 this.window = window;

@@ -1,15 +1,16 @@
 ﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 
 namespace Pirac
 {
-    public class Screen : ViewAware, IScreen
+    public class ViewModelBase : HasViewBase, IActivatable
     {
-        static readonly ILogger Log = PiracRunner.GetLogger<Screen>();
+        static readonly ILogger Log = PiracRunner.GetLogger<ViewModelBase>();
         bool isActive;
         bool isInitialized;
 
-        public IList<IScreen> Screens { get; } = new ObservableCollection<IScreen>();
+        public IList<IActivatable> Children { get; } = new ObservableCollection<IActivatable>();
 
         public bool IsActive
         {
@@ -85,17 +86,17 @@ namespace Pirac
             }
         }
 
-        protected void AddScreens(params IScreen[] screens)
+        protected void AddScreens(params IActivatable[] viewModels)
         {
-            foreach (var screen in screens)
+            foreach (var screen in viewModels.Except(Children))
             {
-                Screens.Add(screen);
+                Children.Add(screen);
             }
         }
 
         protected virtual void ActivateChildren()
         {
-            foreach (var screen in Screens)
+            foreach (var screen in Children)
             {
                 screen.Activate();
             }
@@ -103,7 +104,7 @@ namespace Pirac
 
         protected virtual void DeactivateChildren(bool close)
         {
-            foreach (var screen in Screens)
+            foreach (var screen in Children)
             {
                 screen.Deactivate(close);
             }
@@ -121,15 +122,15 @@ namespace Pirac
         {
         }
 
-        bool IScreen.CanClose()
+        bool IActivatable.CanClose()
         {
-            foreach (var screen in Screens)
+            foreach (var screen in Children)
             {
                 if (!screen.CanClose())
                     return false;
             }
 
-            return CanClose();
+            return CanClose(GetView());
         }
     }
 }

@@ -3,17 +3,25 @@ using System.Windows;
 
 namespace Pirac
 {
-    public class ViewAware : BindableObject, IViewAware
+    public class HasViewBase : BindableObject, IHaveView
     {
         private WeakReference<FrameworkElement> view;
 
         public void TryClose(bool? dialogResult = null)
         {
             FrameworkElement v;
-            if (view != null && view.TryGetTarget(out v) && CanClose())
+            if (view != null && view.TryGetTarget(out v))
             {
-                Close(this, v, dialogResult);
+                if (CanClose(v))
+                    Close(this, v, dialogResult);
             }
+        }
+
+        public FrameworkElement GetView()
+        {
+            FrameworkElement v;
+            view.TryGetTarget(out v);
+            return v;
         }
 
         protected virtual void OnViewAttached(FrameworkElement view)
@@ -24,7 +32,7 @@ namespace Pirac
         {
         }
 
-        protected virtual bool CanClose()
+        protected virtual bool CanClose(FrameworkElement view)
         {
             return true;
         }
@@ -54,11 +62,11 @@ namespace Pirac
             }
             else
             {
-                PiracRunner.GetLogger<ViewAware>().Warn("TryClose requires a view with a Close method.");
+                PiracRunner.GetLogger<HasViewBase>().Warn("TryClose requires a view with a Close method.");
             }
         }
 
-        void IViewAware.AttachView(FrameworkElement view)
+        void IHaveView.AttachView(FrameworkElement view)
         {
             this.view = new WeakReference<FrameworkElement>(view);
 

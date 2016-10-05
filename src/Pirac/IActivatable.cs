@@ -1,6 +1,6 @@
 ﻿namespace Pirac
 {
-    public interface IScreen
+    public interface IActivatable
     {
         void Activate();
 

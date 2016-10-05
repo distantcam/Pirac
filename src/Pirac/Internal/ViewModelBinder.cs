@@ -35,7 +35,7 @@ namespace Pirac.Internal
 
             view.DataContext = viewModel;
 
-            var viewAware = viewModel as IViewAware;
+            var viewAware = viewModel as IHaveView;
             viewAware?.AttachView(view);
         }
 

@@ -52,6 +52,21 @@ namespace Pirac
         public string Error { get; }
         public string PropertyName { get; }
     }
+    public class HasViewBase : Pirac.BindableObject, Pirac.IHaveView
+    {
+        public HasViewBase() { }
+        protected virtual bool CanClose(System.Windows.FrameworkElement view) { }
+        public System.Windows.FrameworkElement GetView() { }
+        protected virtual void OnViewAttached(System.Windows.FrameworkElement view) { }
+        protected virtual void OnViewLoaded(System.Windows.FrameworkElement view) { }
+        public void TryClose(System.Nullable<bool> dialogResult = null) { }
+    }
+    public interface IActivatable
+    {
+        void Activate();
+        bool CanClose();
+        void Deactivate(bool close);
+    }
     public interface IAsyncCommand : Pirac.IAsyncCommand<object>, Pirac.IRaiseCanExecuteChanged, System.Windows.Input.ICommand { }
     public interface IAsyncCommand<in T> : Pirac.IRaiseCanExecuteChanged, System.Windows.Input.ICommand
     {
@@ -81,6 +96,11 @@ namespace Pirac
         System.Collections.Generic.IEnumerable<System.Type> FindMatchingAttachments(object viewModel);
         System.Type FindView(object viewModel);
     }
+    public interface IHaveView
+    {
+        void AttachView(System.Windows.FrameworkElement view);
+        System.Windows.FrameworkElement GetView();
+    }
     public interface ILogger
     {
         void Debug(string message);
@@ -104,16 +124,6 @@ namespace Pirac
     public interface IRaiseCanExecuteChanged
     {
         void RaiseCanExecuteChanged();
-    }
-    public interface IScreen
-    {
-        void Activate();
-        bool CanClose();
-        void Deactivate(bool close);
-    }
-    public interface IViewAware
-    {
-        void AttachView(System.Windows.FrameworkElement view);
     }
     public interface IWindowManager
     {
@@ -191,28 +201,20 @@ namespace Pirac
         public static System.IObservable<Pirac.PropertyChangingData> WhenPropertyChanging(this Pirac.IObservablePropertyChanging changing, string propertyName) { }
         public static System.IObservable<Pirac.PropertyChangingData<TProperty>> WhenPropertyChanging<TProperty>(this Pirac.IObservablePropertyChanging changing, string propertyName) { }
     }
-    public class Screen : Pirac.ViewAware, Pirac.IScreen
+    public class ViewModelBase : Pirac.HasViewBase, Pirac.IActivatable
     {
-        public Screen() { }
+        public ViewModelBase() { }
+        public System.Collections.Generic.IList<Pirac.IActivatable> Children { get; }
         public bool IsActive { get; }
         public bool IsInitialized { get; }
-        public System.Collections.Generic.IList<Pirac.IScreen> Screens { get; }
         public void Activate() { }
         protected virtual void ActivateChildren() { }
-        protected void AddScreens(params Pirac.IScreen[] screens) { }
+        protected void AddScreens(params Pirac.IActivatable[] viewModels) { }
         public void Deactivate(bool close) { }
         protected virtual void DeactivateChildren(bool close) { }
         protected virtual void OnActivate(bool wasInitialized) { }
         protected virtual void OnDeactivate(bool close) { }
         protected virtual void OnInitialize() { }
-    }
-    public class ViewAware : Pirac.BindableObject, Pirac.IViewAware
-    {
-        public ViewAware() { }
-        protected virtual bool CanClose() { }
-        protected virtual void OnViewAttached(System.Windows.FrameworkElement view) { }
-        protected virtual void OnViewLoaded(System.Windows.FrameworkElement view) { }
-        public void TryClose(System.Nullable<bool> dialogResult = null) { }
     }
     public class ViewModelControl : System.Windows.Controls.ContentControl
     {
