@@ -63,7 +63,7 @@ namespace Pirac
             ActivateChildren();
 
             IsActive = true;
-            Log.Info($"Activating {this}.");
+            Log.Debug($"Activating {this}.");
 
             OnActivate(initialized);
         }
@@ -75,14 +75,14 @@ namespace Pirac
                 DeactivateChildren(close);
 
                 IsActive = false;
-                Log.Info($"Deactivating {this}.");
+                Log.Debug($"Deactivating {this}.");
 
                 OnDeactivate(close);
 
                 if (close)
                 {
                     TryClose();
-                    Log.Info($"Closed {this}.");
+                    Log.Debug($"Closed {this}.");
                 }
             }
         }

@@ -62,7 +62,7 @@ namespace Pirac
             }
             else
             {
-                PiracRunner.GetLogger<HasViewBase>().Warn("TryClose requires a view with a Close method.");
+                PiracRunner.GetLogger<HasViewBase>().Warn($"Type {viewType} does not have a 'Close' method.");
             }
         }
 
