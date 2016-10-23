@@ -56,7 +56,6 @@ namespace Pirac
     {
         public HasViewBase() { }
         protected virtual bool CanClose(System.Windows.FrameworkElement view) { }
-        public System.Windows.FrameworkElement GetView() { }
         protected virtual void OnViewAttached(System.Windows.FrameworkElement view) { }
         protected virtual void OnViewLoaded(System.Windows.FrameworkElement view) { }
         public void TryClose(System.Nullable<bool> dialogResult = null) { }

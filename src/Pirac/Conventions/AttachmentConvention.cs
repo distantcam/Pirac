@@ -16,7 +16,7 @@ namespace Pirac.Conventions
             {
                 throw new ConventionBrokenException($"Attachment type '{type}' must be a concrete class.");
             }
-            if (type.GetInterfaces().Any(t => t == typeof(IAttachment)))
+            if (!type.GetInterfaces().Any(t => t == typeof(IAttachment)))
             {
                 throw new ConventionBrokenException($"Attachment type '{type}' must implement '{typeof(IAttachment)}'.");
             }
@@ -34,7 +34,7 @@ namespace Pirac.Conventions
 
         public bool IsVariant(Type type, string basename)
         {
-            return type.Name == basename + "Attachment";
+            return Filter(type) && type.Name.StartsWith(basename);
         }
     }
 }

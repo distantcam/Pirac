@@ -8,13 +8,15 @@ namespace Pirac.Conventions
     {
         public bool Filter(Type type)
         {
-            return type.Name.EndsWith("ViewModel")
-                && type.IsClass
-                && !type.IsAbstract;
+            return type.Name.EndsWith("ViewModel");
         }
 
         public void Verify(Type type)
         {
+            if (type.IsAbstract)
+            {
+                throw new ConventionBrokenException($"ViewModel type '{type}' must be a concrete class.");
+            }
             if (!type.GetInterfaces().Any(t => t == typeof(INotifyPropertyChanged)))
             {
                 throw new ConventionBrokenException($"ViewModel type '{type}' must implement '{typeof(INotifyPropertyChanged)}'.");
@@ -37,7 +39,7 @@ namespace Pirac.Conventions
 
         public bool IsVariant(Type type, string basename)
         {
-            return type.Name == basename + "ViewModel";
+            return Filter(type) && type.Name.StartsWith(basename);
         }
     }
 }

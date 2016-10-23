@@ -6,8 +6,7 @@ namespace Pirac.Conventions
     {
         public bool Filter(Type type)
         {
-            return (type.Name.EndsWith("View") || type.Name.EndsWith("MainWindow"))
-                && type.IsClass;
+            return (type.Name.EndsWith("View") || type.Name.EndsWith("MainWindow"));
         }
 
         public void Verify(Type type)
@@ -35,7 +34,7 @@ namespace Pirac.Conventions
                 return true;
             }
 
-            return type.Name == basename + "View";
+            return Filter(type) && type.Name.StartsWith(basename);
         }
     }
 }

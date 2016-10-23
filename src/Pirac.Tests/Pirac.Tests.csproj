@@ -97,6 +97,7 @@
     <Compile Include="APITests.cs" />
     <Compile Include="App_Packages\PublicApiGenerator.cs" />
     <Compile Include="App_Packages\PublicApiApprover.cs" />
+    <Compile Include="ConventionTests\AttachmentConventionTests.cs" />
     <Compile Include="PiracContextTests.cs" />
     <Compile Include="PiracRunnerTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
