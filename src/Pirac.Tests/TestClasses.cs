@@ -15,7 +15,16 @@
             return null;
         }
 
+        public bool? ShowDialog<TViewModel>()
+        {
+            return null;
+        }
+
         public void ShowWindow(object viewModel)
+        {
+        }
+
+        public void ShowWindow<TViewModel>()
         {
         }
     }

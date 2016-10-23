@@ -78,7 +78,14 @@ namespace Pirac.Tests
 
             if (method.GetParameters().Length == 1)
             {
-                method.Invoke(null, new object[] { null });
+                if (method.GetParameters()[0].ParameterType == typeof(PiracContext))
+                {
+                    method.Invoke(null, new object[] { new PiracContext() });
+                }
+                else
+                {
+                    method.Invoke(null, new object[] { null });
+                }
                 return;
             }
 
@@ -92,8 +99,7 @@ namespace Pirac.Tests
         {
             return method.Name == "Start" ||
                 method.Name == "get_IsContextSet" ||
-                method.Name == "GetLogger" ||
-                method.Name == "EnsureContext";
+                method.Name == "SetContext";
         }
 
         private static bool IsGuardedMethods(MethodInfo method)

@@ -127,7 +127,9 @@ namespace Pirac
     }
     public interface IWindowManager
     {
+        System.Nullable<bool> ShowDialog<TViewModel>();
         System.Nullable<bool> ShowDialog(object viewModel);
+        void ShowWindow<TViewModel>();
         void ShowWindow(object viewModel);
     }
     public class PiracContext
@@ -147,6 +149,7 @@ namespace Pirac
         public static Pirac.IWindowManager WindowManager { get; }
         public static Pirac.ILogger GetLogger(string name) { }
         public static Pirac.ILogger GetLogger<TType>() { }
+        public static void SetContext(Pirac.PiracContext context) { }
         public static void Start<T>(Pirac.PiracContext context = null) { }
     }
     public class PropertyChangedData
