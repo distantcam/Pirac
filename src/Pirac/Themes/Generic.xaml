@@ -1,5 +1,6 @@
 <ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:internal="clr-namespace:Pirac.Internal"
                     xmlns:local="clr-namespace:Pirac">
 
     <Style TargetType="{x:Type local:ViewModelControl}">
@@ -9,7 +10,9 @@
                     <Border Background="{TemplateBinding Background}"
                             BorderBrush="{TemplateBinding BorderBrush}"
                             BorderThickness="{TemplateBinding BorderThickness}">
-                        <ContentPresenter Content="{TemplateBinding Content}" ContentTemplateSelector="{local:ViewModelTemplateSelector}" />
+                        <ContentPresenter x:Name="PART_Presenter"
+                                          Content="{TemplateBinding Content}"
+                                          ContentTemplateSelector="{internal:ViewModelTemplateSelector}" />
                     </Border>
                 </ControlTemplate>
             </Setter.Value>

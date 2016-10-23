@@ -99,7 +99,6 @@ namespace Pirac
     public interface IHaveView
     {
         void AttachView(System.Windows.FrameworkElement view);
-        System.Windows.FrameworkElement GetView();
     }
     public interface ILogger
     {
@@ -219,20 +218,18 @@ namespace Pirac
         protected virtual void OnDeactivate(bool close) { }
         protected virtual void OnInitialize() { }
     }
+    [System.Windows.TemplatePartAttribute(Name="PART_Presenter", Type=typeof(System.Windows.Controls.ContentPresenter))]
     public class ViewModelControl : System.Windows.Controls.ContentControl
     {
         public ViewModelControl() { }
+        public override void OnApplyTemplate() { }
+        protected override void OnContentChanged(object oldContent, object newContent) { }
     }
     public class ViewModelConverter : System.Windows.Markup.MarkupExtension, System.Windows.Data.IValueConverter
     {
         public ViewModelConverter() { }
         public object Convert(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) { }
         public object ConvertBack(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) { }
-        public override object ProvideValue(System.IServiceProvider serviceProvider) { }
-    }
-    public class ViewModelTemplateSelector : System.Windows.Markup.MarkupExtension
-    {
-        public ViewModelTemplateSelector() { }
         public override object ProvideValue(System.IServiceProvider serviceProvider) { }
     }
     public class ViewNotFoundException : System.Exception

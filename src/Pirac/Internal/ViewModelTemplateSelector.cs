@@ -4,9 +4,9 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Markup;
 
-namespace Pirac
+namespace Pirac.Internal
 {
-    public class ViewModelTemplateSelector : MarkupExtension
+    internal class ViewModelTemplateSelector : MarkupExtension
     {
         private static DataTemplateSelector selector = new InternalViewModelTemplateSelector();
 
