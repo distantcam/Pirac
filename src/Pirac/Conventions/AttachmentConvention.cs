@@ -24,6 +24,11 @@ namespace Pirac.Conventions
 
         public string BaseName(Type type)
         {
+            if (type.Name.Length < 10)
+            {
+                return string.Empty;
+            }
+
             return type.Name.Substring(0, type.Name.Length - 10);
         }
 

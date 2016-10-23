@@ -19,8 +19,6 @@ namespace Pirac
 
         public BindableObject()
         {
-            PiracRunner.EnsureContext(null);
-
             changed = new Subject<PropertyChangedData>();
             Changed = changed.AsObservable();
             Changed.ObserveOnPiracMain()

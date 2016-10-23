@@ -9,7 +9,11 @@ namespace Pirac.Internal
 {
     internal class WindowManager : IWindowManager
     {
+        public bool? ShowDialog<TViewModel>() => ShowDialog(PiracRunner.Container.GetInstance<TViewModel>());
+
         public bool? ShowDialog(object viewModel) => CreateWindow(viewModel, true).ShowDialog();
+
+        public void ShowWindow<TViewModel>() => ShowWindow(PiracRunner.Container.GetInstance<TViewModel>());
 
         public void ShowWindow(object viewModel)
         {

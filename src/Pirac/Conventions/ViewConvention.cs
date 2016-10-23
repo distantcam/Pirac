@@ -20,6 +20,11 @@ namespace Pirac.Conventions
 
         public string BaseName(Type type)
         {
+            if (type.Name.Length < 4)
+            {
+                return string.Empty;
+            }
+
             return type.Name == "MainWindow" ? type.Name : type.Name.Substring(0, type.Name.Length - 4);
         }
 

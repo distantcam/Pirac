@@ -14,7 +14,7 @@ namespace Pirac
         {
             context = context ?? new PiracContext();
 
-            EnsureContext(context);
+            SetContext(context);
 
             ConventionManager = new ConventionManager(Assembly.GetCallingAssembly(), context.AttachmentConvention, context.ViewConvention, context.ViewModelConvention);
 
@@ -22,6 +22,21 @@ namespace Pirac
 
             var viewModel = Container.GetInstance<T>();
             WindowManager.ShowWindow(viewModel);
+        }
+
+        public static void SetContext(PiracContext context)
+        {
+            if (context == null)
+                throw new ArgumentNullException(nameof(context), $"{nameof(context)} is null.");
+
+            if (Interlocked.Exchange(ref contextSet, 1) == 0)
+            {
+                Logger = context.Logger;
+                Container = context.Container;
+                WindowManager = context.WindowManager;
+                MainScheduler = context.MainScheduler;
+                BackgroundScheduler = context.BackgroundScheduler;
+            }
         }
 
         internal static Func<string, ILogger> Logger { get; private set; }
@@ -32,37 +47,14 @@ namespace Pirac
         internal static IConventionManager ConventionManager { get; private set; }
         internal static bool IsContextSet => contextSet == 1;
 
-        public static ILogger GetLogger(string name)
-        {
-            EnsureContext(null);
-            return Logger(name);
-        }
+        public static ILogger GetLogger(string name) => Logger(name);
 
-        public static ILogger GetLogger<TType>()
-        {
-            EnsureContext(null);
-            return Logger(typeof(TType).Name);
-        }
+        public static ILogger GetLogger<TType>() => Logger(typeof(TType).Name);
 
         internal static object GetViewForViewModel(object viewModel)
         {
             var viewType = ConventionManager.FindView(viewModel);
             return Container.GetInstance(viewType);
-        }
-
-        internal static void EnsureContext(PiracContext context)
-        {
-            // JIT Startup
-            if (Interlocked.Exchange(ref contextSet, 1) == 0)
-            {
-                context = context ?? new PiracContext();
-
-                Logger = context.Logger;
-                Container = context.Container;
-                WindowManager = context.WindowManager;
-                MainScheduler = context.MainScheduler;
-                BackgroundScheduler = context.BackgroundScheduler;
-            }
         }
     }
 }

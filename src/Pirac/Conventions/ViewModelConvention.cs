@@ -9,15 +9,12 @@ namespace Pirac.Conventions
         public bool Filter(Type type)
         {
             return type.Name.EndsWith("ViewModel")
-                && type.IsClass;
+                && type.IsClass
+                && !type.IsAbstract;
         }
 
         public void Verify(Type type)
         {
-            if (type.IsAbstract)
-            {
-                throw new ConventionBrokenException($"ViewModel type '{type}' must be a concrete class.");
-            }
             if (!type.GetInterfaces().Any(t => t == typeof(INotifyPropertyChanged)))
             {
                 throw new ConventionBrokenException($"ViewModel type '{type}' must implement '{typeof(INotifyPropertyChanged)}'.");
@@ -30,6 +27,11 @@ namespace Pirac.Conventions
 
         public string BaseName(Type type)
         {
+            if (type.Name.Length < 9)
+            {
+                return string.Empty;
+            }
+
             return type.Name.Substring(0, type.Name.Length - 9);
         }
 
