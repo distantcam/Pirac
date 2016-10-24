@@ -55,8 +55,8 @@ namespace Pirac
     public class HasViewBase : Pirac.BindableObject, Pirac.IHaveView
     {
         public HasViewBase() { }
-        protected virtual bool CanClose(System.Windows.FrameworkElement view) { }
-        protected virtual void OnViewAttached(System.Windows.FrameworkElement view) { }
+        protected virtual bool CanClose(object view) { }
+        protected virtual void OnViewAttached(object view) { }
         protected virtual void OnViewLoaded(System.Windows.FrameworkElement view) { }
         public void TryClose(System.Nullable<bool> dialogResult = null) { }
     }
@@ -97,7 +97,7 @@ namespace Pirac
     }
     public interface IHaveView
     {
-        void AttachView(System.Windows.FrameworkElement view);
+        void AttachView(object view);
     }
     public interface ILogger
     {

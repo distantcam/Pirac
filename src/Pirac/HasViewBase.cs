@@ -5,26 +5,26 @@ namespace Pirac
 {
     public class HasViewBase : BindableObject, IHaveView
     {
-        private WeakReference<FrameworkElement> view;
+        private WeakReference<object> view;
 
         public void TryClose(bool? dialogResult = null)
         {
-            FrameworkElement v;
+            object v;
             if (view != null && view.TryGetTarget(out v))
             {
                 if (CanClose(v))
-                    Close(this, v, dialogResult);
+                    Close(v, dialogResult);
             }
         }
 
-        internal FrameworkElement GetView()
+        internal object GetView()
         {
-            FrameworkElement v = null;
+            object v = null;
             view?.TryGetTarget(out v);
             return v;
         }
 
-        protected virtual void OnViewAttached(FrameworkElement view)
+        protected virtual void OnViewAttached(object view)
         {
         }
 
@@ -32,12 +32,12 @@ namespace Pirac
         {
         }
 
-        protected virtual bool CanClose(FrameworkElement view)
+        protected virtual bool CanClose(object view)
         {
             return true;
         }
 
-        private static void Close(object viewModel, FrameworkElement view, bool? dialogResult)
+        private static void Close(object view, bool? dialogResult)
         {
             var viewType = view.GetType();
             var closeMethod = viewType.GetMethod("Close");
@@ -66,23 +66,27 @@ namespace Pirac
             }
         }
 
-        void IHaveView.AttachView(FrameworkElement view)
+        void IHaveView.AttachView(object view)
         {
-            this.view = new WeakReference<FrameworkElement>(view);
+            this.view = new WeakReference<object>(view);
 
-            if (view.IsLoaded)
+            var element = view as FrameworkElement;
+            if (element != null)
             {
-                OnViewLoaded(view);
-            }
-            else
-            {
-                RoutedEventHandler handler = null;
-                handler = (s, e) =>
+                if (element.IsLoaded)
                 {
-                    view.Loaded -= handler;
-                    OnViewLoaded(view);
-                };
-                view.Loaded += handler;
+                    OnViewLoaded(element);
+                }
+                else
+                {
+                    RoutedEventHandler handler = null;
+                    handler = (s, e) =>
+                    {
+                        element.Loaded -= handler;
+                        OnViewLoaded(element);
+                    };
+                    element.Loaded += handler;
+                }
             }
 
             OnViewAttached(view);
