@@ -10,6 +10,17 @@ namespace Pirac
     {
         private static int contextSet;
 
+        static PiracRunner()
+        {
+            // Set up values for testing
+
+            // TODO Use a test scheduler
+            MainScheduler = CurrentThreadScheduler.Instance;
+            BackgroundScheduler = CurrentThreadScheduler.Instance;
+
+            Logger = s => new Logger(s);
+        }
+
         public static void Start<T>(PiracContext context = null)
         {
             context = context ?? new PiracContext();

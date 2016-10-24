@@ -30,6 +30,10 @@ public class ModuleWeaver
 
             if (method.Name == "Start" ||
                 method.Name == "get_IsContextSet" ||
+                method.Name == "get_MainScheduler" ||
+                method.Name == "get_BackgroundScheduler" ||
+                method.Name == "get_Logger" ||
+                method.Name == "GetLogger" ||
                 method.Name == "SetContext") continue;
 
             LogInfo("Adding Guard to " + method.Name);
