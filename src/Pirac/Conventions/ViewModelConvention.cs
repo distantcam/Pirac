@@ -37,7 +37,7 @@ namespace Pirac.Conventions
             return type.Name.Substring(0, type.Name.Length - 9);
         }
 
-        public bool IsVariant(Type type, string basename)
+        public bool IsVariant(Type type, Type variant, string basename)
         {
             return Filter(type) && type.Name.StartsWith(basename);
         }

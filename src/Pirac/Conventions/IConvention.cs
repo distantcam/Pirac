@@ -10,6 +10,6 @@ namespace Pirac.Conventions
 
         string BaseName(Type type);
 
-        bool IsVariant(Type type, string basename);
+        bool IsVariant(Type type, Type variant, string basename);
     }
 }

@@ -7,7 +7,7 @@ namespace Pirac
         public AbstractCommand(System.Func<T, bool> canExecuteMethod = null) { }
         public abstract void Execute(T obj);
     }
-    public abstract class Attachment<T> : Pirac.IAttachment
+    public abstract class Attachment<T> : Pirac.IAttachment<T>
     {
         protected T viewModel;
         protected Attachment() { }
@@ -72,9 +72,9 @@ namespace Pirac
         bool CanExecute(T obj);
         System.Threading.Tasks.Task ExecuteAsync(T obj);
     }
-    public interface IAttachment
+    public interface IAttachment<T>
     {
-        void AttachTo(object obj);
+        void AttachTo(T obj);
     }
     public interface ICommand<in T> : Pirac.IRaiseCanExecuteChanged, System.Windows.Input.ICommand
     {
@@ -252,6 +252,10 @@ namespace Pirac.Commands
 }
 namespace Pirac.Conventions
 {
+    public static class AttachmentHelper
+    {
+        public static void Attach(object attachment, object t) { }
+    }
     public class ConventionBrokenException : System.Exception
     {
         public ConventionBrokenException() { }
@@ -263,7 +267,7 @@ namespace Pirac.Conventions
     {
         string BaseName(System.Type type);
         bool Filter(System.Type type);
-        bool IsVariant(System.Type type, string basename);
+        bool IsVariant(System.Type type, System.Type variant, string basename);
         void Verify(System.Type type);
     }
 }

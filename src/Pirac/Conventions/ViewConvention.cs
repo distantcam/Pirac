@@ -27,7 +27,7 @@ namespace Pirac.Conventions
             return type.Name == "MainWindow" ? type.Name : type.Name.Substring(0, type.Name.Length - 4);
         }
 
-        public bool IsVariant(Type type, string basename)
+        public bool IsVariant(Type type, Type variant, string basename)
         {
             if (type.Name == "MainWindow" && basename == "MainWindow")
             {

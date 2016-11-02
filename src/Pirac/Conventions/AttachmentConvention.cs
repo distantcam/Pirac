@@ -16,9 +16,9 @@ namespace Pirac.Conventions
             {
                 throw new ConventionBrokenException($"Attachment type '{type}' must be a concrete class.");
             }
-            if (!type.GetInterfaces().Any(t => t == typeof(IAttachment)))
+            if (!type.GetInterfaces().Any(t => t.GetGenericTypeDefinition() == typeof(IAttachment<>)))
             {
-                throw new ConventionBrokenException($"Attachment type '{type}' must implement '{typeof(IAttachment)}'.");
+                throw new ConventionBrokenException($"Attachment type '{type}' must implement '{typeof(IAttachment<>)}'.");
             }
         }
 
@@ -32,9 +32,11 @@ namespace Pirac.Conventions
             return type.Name.Substring(0, type.Name.Length - 10);
         }
 
-        public bool IsVariant(Type type, string basename)
+        public bool IsVariant(Type type, Type variant, string basename)
         {
-            return Filter(type) && type.Name.StartsWith(basename);
+            var attachment = typeof(IAttachment<>).MakeGenericType(variant);
+
+            return Filter(type) && type.GetInterfaces().Any(t => t == attachment);
         }
     }
 }

@@ -47,14 +47,14 @@ namespace Pirac.Internal
         public IEnumerable<Type> FindAllViews() => viewTypes;
 
         public Type FindView(object viewModel)
-            => FindAll(viewConvention, viewTypes, viewModelConvention.BaseName(viewModel.GetType()))
+            => FindAll(viewConvention, viewTypes, viewModel.GetType(), viewModelConvention.BaseName(viewModel.GetType()))
             .ThrowIfEmpty(() => new ViewNotFoundException($"View for '{viewModel.GetType()}' not found."))
             .Single();
 
         public IEnumerable<Type> FindMatchingAttachments(object viewModel)
-            => FindAll(attachmentConvention, attachmentTypes, viewModelConvention.BaseName(viewModel.GetType()));
+            => FindAll(attachmentConvention, attachmentTypes, viewModel.GetType(), viewModelConvention.BaseName(viewModel.GetType()));
 
-        private IEnumerable<Type> FindAll(IConvention convention, IEnumerable<Type> types, string basename)
-            => types.Where(t => convention.IsVariant(t, basename));
+        private IEnumerable<Type> FindAll(IConvention convention, IEnumerable<Type> types, Type variant, string basename)
+            => types.Where(t => convention.IsVariant(t, variant, basename));
     }
 }

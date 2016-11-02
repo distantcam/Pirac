@@ -32,4 +32,11 @@
     public class TestViewModel : ViewModelBase { }
 
     public class TestView { }
+
+    public class TestAttachment : Attachment<TestViewModel>
+    {
+        protected override void OnAttach()
+        {
+        }
+    }
 }

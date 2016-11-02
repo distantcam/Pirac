@@ -66,9 +66,15 @@
         {
             convention.Verify(typeof(StructAttachment));
         }
+
+        [Test]
+        public void IsVariant()
+        {
+            Assert.IsTrue(convention.IsVariant(typeof(TestAttachment), typeof(TestViewModel), "Test"));
+        }
     }
 
-    public class InterfaceAttachment : IAttachment
+    public class InterfaceAttachment : IAttachment<object>
     {
         public void AttachTo(object obj)
         {
@@ -86,7 +92,7 @@
     {
     }
 
-    public struct StructAttachment : IAttachment
+    public struct StructAttachment : IAttachment<object>
     {
         public void AttachTo(object obj)
         {

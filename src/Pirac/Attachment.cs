@@ -1,19 +1,19 @@
 ﻿namespace Pirac
 {
-    public interface IAttachment
+    public interface IAttachment<T>
     {
-        void AttachTo(object obj);
+        void AttachTo(T obj);
     }
 
-    public abstract class Attachment<T> : IAttachment
+    public abstract class Attachment<T> : IAttachment<T>
     {
         protected T viewModel;
 
         protected abstract void OnAttach();
 
-        void IAttachment.AttachTo(object obj)
+        void IAttachment<T>.AttachTo(T obj)
         {
-            viewModel = (T)obj;
+            viewModel = obj;
             OnAttach();
         }
     }

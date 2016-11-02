@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Pirac.Conventions;
 using Pirac.LightInject;
 
 namespace Pirac.Internal
@@ -18,10 +19,11 @@ namespace Pirac.Internal
 
             container.Initialize(registration => viewModels.Contains(registration.ServiceType), (factory, instance) =>
             {
-                var matchingAttachments = conventionManager.FindMatchingAttachments(instance).Select(factory.GetAllInstances).Cast<IAttachment>();
+                var matchingAttachments = conventionManager.FindMatchingAttachments(instance)
+                    .SelectMany(factory.GetAllInstances);
                 foreach (var attachment in matchingAttachments)
                 {
-                    attachment.AttachTo(instance);
+                    AttachmentHelper.Attach(attachment, instance);
                 }
             });
         }
