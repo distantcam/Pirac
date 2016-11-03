@@ -30,13 +30,6 @@
         }
 
         [Test]
-        public void Filter_StructAttachment()
-        {
-            var result = convention.Filter(typeof(StructAttachment));
-            Assert.IsTrue(result);
-        }
-
-        [Test]
         public void Filter_NotCorrectAttachmentName()
         {
             var result = convention.Filter(typeof(NotCorrectAttachmentName));
@@ -62,12 +55,6 @@
         }
 
         [Test]
-        public void Verify_StructAttachment()
-        {
-            convention.Verify(typeof(StructAttachment));
-        }
-
-        [Test]
         public void IsVariant()
         {
             Assert.IsTrue(convention.IsVariant(typeof(TestAttachment), typeof(TestViewModel), "Test"));
@@ -90,13 +77,6 @@
 
     public class InheritedAttachment : SimpleAttachment
     {
-    }
-
-    public struct StructAttachment : IAttachment<object>
-    {
-        public void AttachTo(object obj)
-        {
-        }
     }
 
     public class NotCorrectAttachmentName : Attachment<object>

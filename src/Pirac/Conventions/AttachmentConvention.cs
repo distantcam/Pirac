@@ -5,6 +5,8 @@ namespace Pirac.Conventions
 {
     internal class AttachmentConvention : IConvention
     {
+        private Func<Type, bool> attachmentFilter = t => t.GetGenericTypeDefinition() == typeof(IAttachment<>);
+
         public bool Filter(Type type)
         {
             return type.Name.EndsWith("Attachment");
@@ -16,7 +18,7 @@ namespace Pirac.Conventions
             {
                 throw new ConventionBrokenException($"Attachment type '{type}' must be a concrete class.");
             }
-            if (!type.GetInterfaces().Any(t => t.GetGenericTypeDefinition() == typeof(IAttachment<>)))
+            if (!type.GetInterfaces().Any(attachmentFilter))
             {
                 throw new ConventionBrokenException($"Attachment type '{type}' must implement '{typeof(IAttachment<>)}'.");
             }
@@ -34,9 +36,11 @@ namespace Pirac.Conventions
 
         public bool IsVariant(Type type, Type variant, string basename)
         {
-            var attachment = typeof(IAttachment<>).MakeGenericType(variant);
+            var attachmentTypes = type.GetInterfaces()
+                .Where(attachmentFilter)
+                .Select(t => t.GetGenericArguments()[0]);
 
-            return Filter(type) && type.GetInterfaces().Any(t => t == attachment);
+            return Filter(type) && attachmentTypes.Any(t => t.IsAssignableFrom(variant));
         }
     }
 }

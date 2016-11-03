@@ -29,11 +29,13 @@
         }
     }
 
-    public class TestViewModel : ViewModelBase { }
+    public interface IFoo { }
+
+    public class TestViewModel : ViewModelBase, IFoo { }
 
     public class TestView { }
 
-    public class TestAttachment : Attachment<TestViewModel>
+    public class TestAttachment : Attachment<IFoo>
     {
         protected override void OnAttach()
         {
