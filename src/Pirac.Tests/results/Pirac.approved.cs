@@ -55,15 +55,15 @@ namespace Pirac
     public class HasViewBase : Pirac.BindableObject, Pirac.IHaveView
     {
         public HasViewBase() { }
-        protected virtual bool CanClose(object view) { }
+        public virtual bool CanClose { get; }
         protected virtual void OnViewAttached(object view) { }
         protected virtual void OnViewLoaded(System.Windows.FrameworkElement view) { }
         public void TryClose(System.Nullable<bool> dialogResult = null) { }
     }
     public interface IActivatable
     {
+        bool CanClose { get; }
         void Activate();
-        bool CanClose();
         void Deactivate(bool close);
     }
     public interface IAsyncCommand : Pirac.IAsyncCommand<object>, Pirac.IRaiseCanExecuteChanged, System.Windows.Input.ICommand { }

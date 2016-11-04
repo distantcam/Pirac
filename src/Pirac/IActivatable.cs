@@ -6,6 +6,6 @@
 
         void Deactivate(bool close);
 
-        bool CanClose();
+        bool CanClose { get; }
     }
 }

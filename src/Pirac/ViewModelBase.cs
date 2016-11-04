@@ -123,15 +123,18 @@ namespace Pirac
         {
         }
 
-        bool IActivatable.CanClose()
+        bool IActivatable.CanClose
         {
-            foreach (var screen in Children)
+            get
             {
-                if (!screen.CanClose())
-                    return false;
-            }
+                foreach (var screen in Children)
+                {
+                    if (!screen.CanClose)
+                        return false;
+                }
 
-            return CanClose(GetView());
+                return CanClose;
+            }
         }
     }
 }

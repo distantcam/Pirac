@@ -7,12 +7,14 @@ namespace Pirac
     {
         private WeakReference<object> view;
 
+        public virtual bool CanClose { get; } = true;
+
         public void TryClose(bool? dialogResult = null)
         {
             object v;
             if (view != null && view.TryGetTarget(out v))
             {
-                if (CanClose(v))
+                if (CanClose)
                     Close(v, dialogResult);
             }
         }
@@ -30,11 +32,6 @@ namespace Pirac
 
         protected virtual void OnViewLoaded(FrameworkElement view)
         {
-        }
-
-        protected virtual bool CanClose(object view)
-        {
-            return true;
         }
 
         private static void Close(object view, bool? dialogResult)

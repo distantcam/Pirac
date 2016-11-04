@@ -138,7 +138,7 @@ namespace Pirac.Internal
 
             void Closing(object sender, CancelEventArgs e)
             {
-                e.Cancel = !screen.CanClose();
+                e.Cancel = !screen.CanClose;
             }
 
             void Closed(object sender, EventArgs e)
