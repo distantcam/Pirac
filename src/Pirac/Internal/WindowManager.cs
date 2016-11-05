@@ -37,7 +37,7 @@ namespace Pirac.Internal
 
         private static Window CreateWindow(object viewModel, bool isDialog)
         {
-            var view = EnsureWindow(viewModel, PiracRunner.GetViewForViewModel(viewModel), isDialog);
+            var view = EnsureWindow(PiracRunner.GetViewForViewModel(viewModel), isDialog);
 
             ViewModelBinder.Bind(view, viewModel);
 
@@ -50,7 +50,7 @@ namespace Pirac.Internal
             return view;
         }
 
-        private static Window EnsureWindow(object viewModel, object view, bool isDialog)
+        private static Window EnsureWindow(object view, bool isDialog)
         {
             var window = view as Window;
 
@@ -123,12 +123,10 @@ namespace Pirac.Internal
         class WindowConductor
         {
             IActivatable screen;
-            Window window;
 
             public WindowConductor(IActivatable screen, Window window)
             {
                 this.screen = screen;
-                this.window = window;
 
                 screen.Activate();
 
@@ -144,6 +142,7 @@ namespace Pirac.Internal
             void Closed(object sender, EventArgs e)
             {
                 var window = (Window)sender;
+
                 window.Closing -= Closing;
                 window.Closed -= Closed;
 

@@ -35,7 +35,14 @@ namespace Pirac.Internal
                     return CreateMessageTemplate(viewModel.GetType(), "View for", viewModel.ToString());
                 }
 
-                var viewType = PiracRunner.ConventionManager.FindView(viewModel);
+                Type viewType = null;
+                try
+                {
+                    viewType = PiracRunner.ConventionManager.FindView(viewModel);
+                }
+                catch (ViewNotFoundException)
+                {
+                }
                 if (viewType == null)
                 {
                     return CreateMessageTemplate(viewModel.GetType(), "Could not find view for", viewModel.ToString());

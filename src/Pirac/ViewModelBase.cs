@@ -81,7 +81,6 @@ namespace Pirac
 
                 if (close)
                 {
-                    TryClose();
                     Log.Debug($"Closed {this}.");
                 }
             }
