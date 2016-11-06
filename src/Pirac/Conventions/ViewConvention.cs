@@ -6,7 +6,7 @@ namespace Pirac.Conventions
     {
         public bool Filter(Type type)
         {
-            return (type.Name.EndsWith("View") || type.Name.EndsWith("MainWindow"));
+            return (type.Name.EndsWith("View") || string.Equals(type.Name, "MainWindow"));
         }
 
         public void Verify(Type type)

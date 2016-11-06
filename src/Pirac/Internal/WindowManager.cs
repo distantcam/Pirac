@@ -41,7 +41,7 @@ namespace Pirac.Internal
 
             ViewModelBinder.Bind(view, viewModel);
 
-            var screen = viewModel as IActivatable;
+            var screen = viewModel as IObserveActivation;
             if (screen != null)
             {
                 new WindowConductor(screen, view);
@@ -122,9 +122,10 @@ namespace Pirac.Internal
 
         class WindowConductor
         {
-            IActivatable screen;
+            IObserveActivation screen;
+            Func<bool> canCloseCheck;
 
-            public WindowConductor(IActivatable screen, Window window)
+            public WindowConductor(IObserveActivation screen, Window window)
             {
                 this.screen = screen;
 
@@ -136,7 +137,7 @@ namespace Pirac.Internal
 
             void Closing(object sender, CancelEventArgs e)
             {
-                e.Cancel = !screen.CanClose;
+                e.Cancel = !screen.CanCloseAll();
             }
 
             void Closed(object sender, EventArgs e)

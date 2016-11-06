@@ -35,8 +35,8 @@ namespace Pirac.Internal
 
             view.DataContext = viewModel;
 
-            var viewAware = viewModel as IHaveView;
-            viewAware?.AttachView(view);
+            var observeView = viewModel as IObserveView;
+            observeView.AttachView(view);
         }
 
         private static bool TryBind(FrameworkElement element, PropertyInfo property, object viewModel)

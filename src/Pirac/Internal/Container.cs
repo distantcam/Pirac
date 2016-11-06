@@ -8,10 +8,12 @@ namespace Pirac.Internal
 {
     internal class Container : IContainer
     {
-        private IServiceContainer container = new ServiceContainer();
+        private ServiceContainer container = new ServiceContainer();
 
         public void Configure(IEnumerable<Type> views, IEnumerable<Type> viewModels, IEnumerable<Type> attachments, IConventionManager conventionManager)
         {
+            container.PropertyDependencySelector = new PropertyInjectionDisabler();
+
             foreach (var type in views.Concat(viewModels).Concat(attachments))
             {
                 container.Register(type);
@@ -31,5 +33,13 @@ namespace Pirac.Internal
         public object GetInstance(Type type) => container.GetInstance(type);
 
         public T GetInstance<T>() => container.GetInstance<T>();
+
+        class PropertyInjectionDisabler : IPropertyDependencySelector
+        {
+            public IEnumerable<PropertyDependency> Execute(Type type)
+            {
+                return new PropertyDependency[0];
+            }
+        }
     }
 }

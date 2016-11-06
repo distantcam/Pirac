@@ -1,17 +1,43 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Reactive;
+using System.Reactive.Subjects;
+using System.Threading;
 
 namespace Pirac
 {
-    public class ViewModelBase : HasViewBase, IActivatable
+    public class ViewModelBase : ObserveView, IObserveClose, IObserveActivation
     {
         static readonly ILogger Log = PiracRunner.GetLogger<ViewModelBase>();
-        bool isActive;
-        bool isInitialized;
-        ObservableCollection<IActivatable> children = new ObservableCollection<IActivatable>();
 
-        public IReadOnlyList<IActivatable> Children => children;
+        private ObservableCollection<IObserveActivation> children;
+
+        private Subject<Unit> initialized;
+        private Subject<bool> activated;
+        private Subject<bool> deactivated;
+
+        private bool isActive;
+        private bool isInitialized;
+
+        private volatile int disposeSignaled;
+
+        public ViewModelBase()
+        {
+            CanCloseCheck = () => true;
+
+            initialized = new Subject<Unit>();
+            Initialized = initialized;
+
+            activated = new Subject<bool>();
+            Activated = activated;
+
+            deactivated = new Subject<bool>();
+            Deactivated = deactivated;
+
+            children = new ObservableCollection<IObserveActivation>();
+        }
 
         public bool IsActive
         {
@@ -45,19 +71,49 @@ namespace Pirac
             }
         }
 
-        public void Activate()
+        Func<bool> canCloseCheck;
+
+        public Func<bool> CanCloseCheck
+        {
+            get
+            {
+                return canCloseCheck;
+            }
+            set
+            {
+                canCloseCheck = value;
+            }
+        }
+
+        public IObservable<Unit> Initialized { get; }
+
+        public IObservable<bool> Activated { get; }
+
+        public IObservable<bool> Deactivated { get; }
+
+        public IReadOnlyList<IObserveActivation> Children => children;
+
+        public void AddChildren(params IObserveActivation[] viewModels)
+        {
+            foreach (var screen in viewModels.Except(Children))
+            {
+                children.Add(screen);
+            }
+        }
+
+        void IObserveActivation.Activate()
         {
             if (IsActive)
             {
                 return;
             }
 
-            var initialized = false;
+            var isInitialized = false;
 
             if (!IsInitialized)
             {
-                IsInitialized = initialized = true;
-                OnInitialize();
+                IsInitialized = isInitialized = true;
+                initialized.OnNext(Unit.Default);
             }
 
             ActivateChildren();
@@ -65,10 +121,10 @@ namespace Pirac
             IsActive = true;
             Log.Debug($"Activating {this}.");
 
-            OnActivate(initialized);
+            activated.OnNext(isInitialized);
         }
 
-        public void Deactivate(bool close)
+        void IObserveActivation.Deactivate(bool close)
         {
             if (IsActive || (IsInitialized && close))
             {
@@ -77,7 +133,7 @@ namespace Pirac
                 IsActive = false;
                 Log.Debug($"Deactivating {this}.");
 
-                OnDeactivate(close);
+                deactivated.OnNext(close);
 
                 if (close)
                 {
@@ -86,12 +142,9 @@ namespace Pirac
             }
         }
 
-        protected void AddChildren(params IActivatable[] viewModels)
+        bool IObserveActivation.CanCloseAll()
         {
-            foreach (var screen in viewModels.Except(Children))
-            {
-                children.Add(screen);
-            }
+            return Children.All(c => c.CanCloseAll()) && CanCloseCheck();
         }
 
         protected virtual void ActivateChildren()
@@ -110,30 +163,32 @@ namespace Pirac
             }
         }
 
-        protected virtual void OnInitialize()
+        public override void Dispose()
         {
-        }
-
-        protected virtual void OnActivate(bool wasInitialized)
-        {
-        }
-
-        protected virtual void OnDeactivate(bool close)
-        {
-        }
-
-        bool IActivatable.CanClose
-        {
-            get
+            if (Interlocked.Exchange(ref disposeSignaled, 1) != 0)
             {
-                foreach (var screen in Children)
-                {
-                    if (!screen.CanClose)
-                        return false;
-                }
-
-                return CanClose;
+                return;
             }
+            if (initialized != null)
+            {
+                initialized.OnCompleted();
+                initialized.Dispose();
+                initialized = null;
+            }
+            if (activated != null)
+            {
+                activated.OnCompleted();
+                activated.Dispose();
+                activated = null;
+            }
+            if (deactivated != null)
+            {
+                deactivated.OnCompleted();
+                deactivated.Dispose();
+                deactivated = null;
+            }
+
+            base.Dispose();
         }
     }
 }

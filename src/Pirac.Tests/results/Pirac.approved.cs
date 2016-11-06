@@ -52,20 +52,6 @@ namespace Pirac
         public string Error { get; }
         public string PropertyName { get; }
     }
-    public class HasViewBase : Pirac.BindableObject, Pirac.IHaveView
-    {
-        public HasViewBase() { }
-        public virtual bool CanClose { get; }
-        protected virtual void OnViewAttached(object view) { }
-        protected virtual void OnViewLoaded(System.Windows.FrameworkElement view) { }
-        public void TryClose(System.Nullable<bool> dialogResult = null) { }
-    }
-    public interface IActivatable
-    {
-        bool CanClose { get; }
-        void Activate();
-        void Deactivate(bool close);
-    }
     public interface IAsyncCommand : Pirac.IAsyncCommand<object>, Pirac.IRaiseCanExecuteChanged, System.Windows.Input.ICommand { }
     public interface IAsyncCommand<in T> : Pirac.IRaiseCanExecuteChanged, System.Windows.Input.ICommand
     {
@@ -95,10 +81,6 @@ namespace Pirac
         System.Collections.Generic.IEnumerable<System.Type> FindMatchingAttachments(object viewModel);
         System.Type FindView(object viewModel);
     }
-    public interface IHaveView
-    {
-        void AttachView(object view);
-    }
     public interface ILogger
     {
         void Debug(string message);
@@ -119,6 +101,25 @@ namespace Pirac
     {
         System.IObservable<Pirac.PropertyChangingData> Changing { get; }
     }
+    public interface IObserveActivation : Pirac.IObserveClose
+    {
+        System.IObservable<bool> Activated { get; }
+        System.IObservable<bool> Deactivated { get; }
+        System.IObservable<System.Reactive.Unit> Initialized { get; }
+        void Activate();
+        bool CanCloseAll();
+        void Deactivate(bool close);
+    }
+    public interface IObserveClose
+    {
+        System.Func<bool> CanCloseCheck { get; set; }
+    }
+    public interface IObserveView
+    {
+        System.IObservable<object> ViewAttached { get; }
+        System.IObservable<System.Windows.FrameworkElement> ViewLoaded { get; }
+        void AttachView(object view);
+    }
     public interface IRaiseCanExecuteChanged
     {
         void RaiseCanExecuteChanged();
@@ -129,6 +130,13 @@ namespace Pirac
         System.Nullable<bool> ShowDialog(object viewModel);
         void ShowWindow<TViewModel>();
         void ShowWindow(object viewModel);
+    }
+    public class ObserveView : Pirac.BindableObject, Pirac.IObserveView
+    {
+        public ObserveView() { }
+        public System.IObservable<object> ViewAttached { get; }
+        public System.IObservable<System.Windows.FrameworkElement> ViewLoaded { get; }
+        public override void Dispose() { }
     }
     public class PiracContext
     {
@@ -202,20 +210,20 @@ namespace Pirac
         public static System.IObservable<Pirac.PropertyChangingData> WhenPropertyChanging(this Pirac.IObservablePropertyChanging changing, string propertyName) { }
         public static System.IObservable<Pirac.PropertyChangingData<TProperty>> WhenPropertyChanging<TProperty>(this Pirac.IObservablePropertyChanging changing, string propertyName) { }
     }
-    public class ViewModelBase : Pirac.HasViewBase, Pirac.IActivatable
+    public class ViewModelBase : Pirac.ObserveView, Pirac.IObserveActivation, Pirac.IObserveClose
     {
         public ViewModelBase() { }
-        public System.Collections.Generic.IReadOnlyList<Pirac.IActivatable> Children { get; }
+        public System.IObservable<bool> Activated { get; }
+        public System.Func<bool> CanCloseCheck { get; set; }
+        public System.Collections.Generic.IReadOnlyList<Pirac.IObserveActivation> Children { get; }
+        public System.IObservable<bool> Deactivated { get; }
+        public System.IObservable<System.Reactive.Unit> Initialized { get; }
         public bool IsActive { get; }
         public bool IsInitialized { get; }
-        public void Activate() { }
         protected virtual void ActivateChildren() { }
-        protected void AddChildren(params Pirac.IActivatable[] viewModels) { }
-        public void Deactivate(bool close) { }
+        public void AddChildren(params Pirac.IObserveActivation[] viewModels) { }
         protected virtual void DeactivateChildren(bool close) { }
-        protected virtual void OnActivate(bool wasInitialized) { }
-        protected virtual void OnDeactivate(bool close) { }
-        protected virtual void OnInitialize() { }
+        public override void Dispose() { }
     }
     [System.Windows.TemplatePartAttribute(Name="PART_Presenter", Type=typeof(System.Windows.Controls.ContentPresenter))]
     public class ViewModelControl : System.Windows.Controls.ContentControl

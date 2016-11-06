@@ -1,11 +1,18 @@
-﻿namespace Pirac
+﻿using System;
+using System.Reactive;
+
+namespace Pirac
 {
-    public interface IActivatable
+    public interface IObserveActivation : IObserveClose
     {
+        IObservable<Unit> Initialized { get; }
+        IObservable<bool> Activated { get; }
+        IObservable<bool> Deactivated { get; }
+
         void Activate();
 
         void Deactivate(bool close);
 
-        bool CanClose { get; }
+        bool CanCloseAll();
     }
 }

@@ -21,7 +21,7 @@
     OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
     SOFTWARE.
 ******************************************************************************
-    LightInject version 4.1.1 (NET45)
+    LightInject version 4.1.3 (NET45)
     http://www.lightinject.net/
     http://twitter.com/bernhardrichter
 ******************************************************************************/
@@ -1932,6 +1932,7 @@ namespace Pirac.LightInject
             {
                 AssemblyScanner.Scan(assembly, this);
             }
+
             return this;
         }
 
@@ -2056,6 +2057,7 @@ namespace Pirac.LightInject
             {
                 RegisterAssembly(assembly);
             }
+
             return this;
         }
 #endif
@@ -3729,9 +3731,25 @@ namespace Pirac.LightInject
 
             Type[] closedGenericArguments = closedGenericServiceType.GetTypeInfo().GenericTypeArguments;
 
+            Type baseTypeImplementingOpenGenericServiceType = GetBaseTypeImplementingGenericTypeDefinition(
+                openGenericServiceRegistration.ImplementingType,
+                openGenericServiceType);
+
+            Type[] baseTypeGenericArguments =
+                baseTypeImplementingOpenGenericServiceType.GetTypeInfo().GenericTypeArguments;
+
+            string[] genericParameterNames =
+                openGenericServiceRegistration.ImplementingType.GetTypeInfo().GenericTypeParameters.Select(t => t.Name).ToArray();
+
+            var genericArgumentMap = new Dictionary<string, Type>(genericParameterNames.Length);
+
+            MapGenericArguments(closedGenericArguments, baseTypeGenericArguments, genericArgumentMap);
+
+            var typeArguments = genericParameterNames.Select(parameterName => genericArgumentMap[parameterName]).ToArray();
+
             Type closedGenericImplementingType = TryMakeGenericType(
                 openGenericServiceRegistration.ImplementingType,
-                closedGenericArguments);
+                typeArguments.ToArray());
 
             if (closedGenericImplementingType == null)
             {
@@ -3747,6 +3765,46 @@ namespace Pirac.LightInject
             };
             Register(serviceRegistration);
             return GetEmitMethod(serviceRegistration.ServiceType, serviceRegistration.ServiceName);
+        }
+
+        private void MapGenericArguments(Type[] closedGenericArguments, Type[] baseTypeGenericArguments, IDictionary<string, Type> map)
+        {
+            for (int index = 0; index < baseTypeGenericArguments.Length; index++)
+            {
+                var baseTypeGenericArgument = baseTypeGenericArguments[index];
+                var closedGenericArgument = closedGenericArguments[index];
+                if (baseTypeGenericArgument.GetTypeInfo().IsGenericParameter)
+                {
+                    map[baseTypeGenericArgument.Name] = closedGenericArgument;
+                }
+                else if (baseTypeGenericArgument.GetTypeInfo().IsGenericType)
+                {
+                    MapGenericArguments(closedGenericArgument.GetTypeInfo().GenericTypeArguments, baseTypeGenericArgument.GetTypeInfo().GenericTypeArguments, map);
+                }
+            }
+        }
+
+        private static Type GetBaseTypeImplementingGenericTypeDefinition(Type implementingType, Type genericTypeDefinition)
+        {
+            if (genericTypeDefinition.GetTypeInfo().IsInterface)
+            {
+                return implementingType
+                    .GetTypeInfo().ImplementedInterfaces
+                    .First(i => i.GetTypeInfo().IsGenericType && i.GetTypeInfo().GetGenericTypeDefinition() == genericTypeDefinition);
+            }
+
+            Type baseType = implementingType;
+            while (!ImplementsOpenGenericTypeDefinition(genericTypeDefinition, baseType))
+            {
+                baseType = baseType.GetTypeInfo().BaseType;
+            }
+
+            return baseType;
+        }
+
+        private static bool ImplementsOpenGenericTypeDefinition(Type genericTypeDefinition, Type baseType)
+        {
+            return baseType.GetTypeInfo().IsGenericType && baseType.GetTypeInfo().GetGenericTypeDefinition() == genericTypeDefinition;
         }
 
         private Action<IEmitter> CreateEmitMethodForEnumerableServiceServiceRequest(Type serviceType)
@@ -3839,7 +3897,7 @@ namespace Pirac.LightInject
             if (serviceRegistration.Lifetime is PerContainerLifetime)
             {
                 Func<object> instanceDelegate =
-                    WrapAsFuncDelegate(CreateDynamicMethodDelegate(emitMethod));
+                    () => WrapAsFuncDelegate(CreateDynamicMethodDelegate(emitMethod))();
                 var instance = serviceRegistration.Lifetime.GetInstance(instanceDelegate, null);
                 var instanceIndex = constants.Add(instance);
                 emitter.PushConstant(instanceIndex, instance.GetType());

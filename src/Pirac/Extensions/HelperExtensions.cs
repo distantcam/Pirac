@@ -12,5 +12,12 @@ namespace Pirac
                 throw exception();
             return source;
         }
+
+        public static T Value<T>(this WeakReference<T> item) where T : class
+        {
+            T v = null;
+            item?.TryGetTarget(out v);
+            return v;
+        }
     }
 }
