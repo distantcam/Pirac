@@ -11,6 +11,9 @@ namespace Pirac
         private Subject<object> viewAttached;
         private Subject<FrameworkElement> viewLoaded;
 
+        private IObservable<object> whenViewAttached;
+        private IObservable<FrameworkElement> whenViewLoaded;
+
         private WeakReference<object> view;
 
         private volatile int disposeSignaled;
@@ -18,15 +21,15 @@ namespace Pirac
         public ObserveView()
         {
             viewAttached = new Subject<object>();
-            ViewAttached = viewAttached.AsObservable();
+            whenViewAttached = viewAttached.AsObservable();
 
             viewLoaded = new Subject<FrameworkElement>();
-            ViewLoaded = viewLoaded.AsObservable();
+            whenViewLoaded = viewLoaded.AsObservable();
         }
 
-        public IObservable<object> ViewAttached { get; }
+        public IObservable<object> WhenViewAttached() => whenViewAttached;
 
-        public IObservable<FrameworkElement> ViewLoaded { get; }
+        public IObservable<FrameworkElement> WhenViewLoaded() => whenViewLoaded;
 
         void IObserveView.AttachView(object view)
         {

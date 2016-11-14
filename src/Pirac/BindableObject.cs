@@ -15,29 +15,33 @@ namespace Pirac
         private Subject<PropertyChangingData> changing;
         private Subject<DataErrorChanged> errorChanged;
 
+        private IObservable<PropertyChangedData> whenChanged;
+        private IObservable<PropertyChangingData> whenChanging;
+        private IObservable<DataErrorChanged> whenErrorChanged;
+
         private volatile int disposeSignaled;
 
         public BindableObject()
         {
             changed = new Subject<PropertyChangedData>();
-            Changed = changed.AsObservable();
-            Changed.ObserveOnPiracMain()
+            whenChanged = changed.AsObservable();
+            whenChanged.ObserveOnPiracMain()
                 .Subscribe(args =>
                 {
                     propertyChanged?.Invoke(this, new PropertyChangedEventArgs(args.PropertyName));
                 });
 
             changing = new Subject<PropertyChangingData>();
-            Changing = changing.AsObservable();
-            Changing.ObserveOnPiracMain()
+            whenChanging = changing.AsObservable();
+            whenChanging.ObserveOnPiracMain()
                 .Subscribe(args =>
                 {
                     propertyChanging?.Invoke(this, new PropertyChangingEventArgs(args.PropertyName));
                 });
 
             errorChanged = new Subject<DataErrorChanged>();
-            ErrorsChanged = errorChanged.AsObservable();
-            ErrorsChanged.ObserveOnPiracMain()
+            whenErrorChanged = errorChanged.AsObservable();
+            whenErrorChanged.ObserveOnPiracMain()
                 .Subscribe(args =>
                 {
                     if (string.IsNullOrEmpty(args.Error))
@@ -53,11 +57,11 @@ namespace Pirac
                 });
         }
 
-        public IObservable<PropertyChangedData> Changed { get; }
+        IObservable<PropertyChangedData> IObservablePropertyChanged.Changed => whenChanged;
 
-        public IObservable<PropertyChangingData> Changing { get; }
+        IObservable<PropertyChangingData> IObservablePropertyChanging.Changing => whenChanging;
 
-        public IObservable<DataErrorChanged> ErrorsChanged { get; }
+        IObservable<DataErrorChanged> IObservableDataErrorInfo.ErrorsChanged => whenErrorChanged;
 
         public bool ChangeNotificationEnabled => Interlocked.Read(ref changeNotificationSuppressionCount) == 0L;
 
@@ -105,12 +109,12 @@ namespace Pirac
                 changing.OnNext(new PropertyChangingData(propertyName, before));
         }
 
-        protected void SetDataError(string propertyName, string error)
+        public void SetDataError(string propertyName, string error)
         {
             errorChanged.OnNext(new DataErrorChanged(propertyName, error));
         }
 
-        protected void ResetDataError(string propertyName)
+        public void ResetDataError(string propertyName)
         {
             errorChanged.OnNext(new DataErrorChanged(propertyName, ""));
         }

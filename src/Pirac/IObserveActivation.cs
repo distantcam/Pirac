@@ -5,9 +5,11 @@ namespace Pirac
 {
     public interface IObserveActivation : IObserveClose
     {
-        IObservable<Unit> Initialized { get; }
-        IObservable<bool> Activated { get; }
-        IObservable<bool> Deactivated { get; }
+        IObservable<Unit> WhenInitialized();
+
+        IObservable<bool> WhenActivated();
+
+        IObservable<bool> WhenDeactivated();
 
         void Activate();
 

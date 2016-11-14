@@ -53,8 +53,8 @@ namespace Pirac
         internal static Func<string, ILogger> Logger { get; private set; }
         internal static IContainer Container { get; private set; }
         public static IWindowManager WindowManager { get; private set; }
-        internal static IScheduler MainScheduler { get; private set; }
-        internal static IScheduler BackgroundScheduler { get; private set; }
+        public static IScheduler MainScheduler { get; private set; }
+        public static IScheduler BackgroundScheduler { get; private set; }
         internal static IConventionManager ConventionManager { get; private set; }
         internal static bool IsContextSet => contextSet == 1;
 

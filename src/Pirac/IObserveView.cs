@@ -5,9 +5,9 @@ namespace Pirac
 {
     public interface IObserveView
     {
-        IObservable<object> ViewAttached { get; }
+        IObservable<object> WhenViewAttached();
 
-        IObservable<FrameworkElement> ViewLoaded { get; }
+        IObservable<FrameworkElement> WhenViewLoaded();
 
         void AttachView(object view);
     }

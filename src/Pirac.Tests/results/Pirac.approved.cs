@@ -21,18 +21,15 @@ namespace Pirac
     public class BindableObject : Pirac.IObservableDataErrorInfo, Pirac.IObservablePropertyChanged, Pirac.IObservablePropertyChanging, System.ComponentModel.INotifyDataErrorInfo, System.ComponentModel.INotifyPropertyChanged, System.ComponentModel.INotifyPropertyChanging, System.IDisposable
     {
         public BindableObject() { }
-        public System.IObservable<Pirac.PropertyChangedData> Changed { get; }
         public bool ChangeNotificationEnabled { get; }
-        public System.IObservable<Pirac.PropertyChangingData> Changing { get; }
-        public System.IObservable<Pirac.DataErrorChanged> ErrorsChanged { get; }
         public event System.EventHandler<System.ComponentModel.DataErrorsChangedEventArgs> System.ComponentModel.INotifyDataErrorInfo.ErrorsChanged;
         public event System.ComponentModel.PropertyChangedEventHandler System.ComponentModel.INotifyPropertyChanged.PropertyChanged;
         public event System.ComponentModel.PropertyChangingEventHandler System.ComponentModel.INotifyPropertyChanging.PropertyChanging;
         public virtual void Dispose() { }
         protected void OnPropertyChanged(string propertyName, object before, object after) { }
         protected void OnPropertyChanging(string propertyName, object before) { }
-        protected void ResetDataError(string propertyName) { }
-        protected void SetDataError(string propertyName, string error) { }
+        public void ResetDataError(string propertyName) { }
+        public void SetDataError(string propertyName, string error) { }
         public System.IDisposable SuppressNotifications() { }
     }
     public static class Command
@@ -103,22 +100,23 @@ namespace Pirac
     }
     public interface IObserveActivation : Pirac.IObserveClose
     {
-        System.IObservable<bool> Activated { get; }
-        System.IObservable<bool> Deactivated { get; }
-        System.IObservable<System.Reactive.Unit> Initialized { get; }
         void Activate();
         bool CanCloseAll();
         void Deactivate(bool close);
+        System.IObservable<bool> WhenActivated();
+        System.IObservable<bool> WhenDeactivated();
+        System.IObservable<System.Reactive.Unit> WhenInitialized();
     }
     public interface IObserveClose
     {
         System.Func<bool> CanCloseCheck { get; set; }
+        System.IObservable<System.Reactive.Unit> WhenClosed();
     }
     public interface IObserveView
     {
-        System.IObservable<object> ViewAttached { get; }
-        System.IObservable<System.Windows.FrameworkElement> ViewLoaded { get; }
         void AttachView(object view);
+        System.IObservable<object> WhenViewAttached();
+        System.IObservable<System.Windows.FrameworkElement> WhenViewLoaded();
     }
     public interface IRaiseCanExecuteChanged
     {
@@ -134,9 +132,9 @@ namespace Pirac
     public class ObserveView : Pirac.BindableObject, Pirac.IObserveView
     {
         public ObserveView() { }
-        public System.IObservable<object> ViewAttached { get; }
-        public System.IObservable<System.Windows.FrameworkElement> ViewLoaded { get; }
         public override void Dispose() { }
+        public System.IObservable<object> WhenViewAttached() { }
+        public System.IObservable<System.Windows.FrameworkElement> WhenViewLoaded() { }
     }
     public class PiracContext
     {
@@ -152,6 +150,8 @@ namespace Pirac
     }
     public static class PiracRunner
     {
+        public static System.Reactive.Concurrency.IScheduler BackgroundScheduler { get; }
+        public static System.Reactive.Concurrency.IScheduler MainScheduler { get; }
         public static Pirac.IWindowManager WindowManager { get; }
         public static Pirac.ILogger GetLogger(string name) { }
         public static Pirac.ILogger GetLogger<TType>() { }
@@ -213,17 +213,18 @@ namespace Pirac
     public class ViewModelBase : Pirac.ObserveView, Pirac.IObserveActivation, Pirac.IObserveClose
     {
         public ViewModelBase() { }
-        public System.IObservable<bool> Activated { get; }
         public System.Func<bool> CanCloseCheck { get; set; }
         public System.Collections.Generic.IReadOnlyList<Pirac.IObserveActivation> Children { get; }
-        public System.IObservable<bool> Deactivated { get; }
-        public System.IObservable<System.Reactive.Unit> Initialized { get; }
         public bool IsActive { get; }
         public bool IsInitialized { get; }
         protected virtual void ActivateChildren() { }
         public void AddChildren(params Pirac.IObserveActivation[] viewModels) { }
         protected virtual void DeactivateChildren(bool close) { }
         public override void Dispose() { }
+        public System.IObservable<bool> WhenActivated() { }
+        public System.IObservable<System.Reactive.Unit> WhenClosed() { }
+        public System.IObservable<bool> WhenDeactivated() { }
+        public System.IObservable<System.Reactive.Unit> WhenInitialized() { }
     }
     [System.Windows.TemplatePartAttribute(Name="PART_Presenter", Type=typeof(System.Windows.Controls.ContentPresenter))]
     public class ViewModelControl : System.Windows.Controls.ContentControl

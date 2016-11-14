@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reactive;
+using System.Reactive.Linq;
 using System.Reactive.Subjects;
 using System.Threading;
 
@@ -17,6 +18,12 @@ namespace Pirac
         private Subject<Unit> initialized;
         private Subject<bool> activated;
         private Subject<bool> deactivated;
+        private Subject<Unit> closed;
+
+        private IObservable<Unit> whenInitialized;
+        private IObservable<bool> whenActivated;
+        private IObservable<bool> whenDeactivated;
+        private IObservable<Unit> whenClosed;
 
         private bool isActive;
         private bool isInitialized;
@@ -28,13 +35,16 @@ namespace Pirac
             CanCloseCheck = () => true;
 
             initialized = new Subject<Unit>();
-            Initialized = initialized;
+            whenInitialized = initialized.AsObservable();
 
             activated = new Subject<bool>();
-            Activated = activated;
+            whenActivated = activated.AsObservable();
 
             deactivated = new Subject<bool>();
-            Deactivated = deactivated;
+            whenDeactivated = deactivated.AsObservable();
+
+            closed = new Subject<Unit>();
+            whenClosed = closed.AsObservable();
 
             children = new ObservableCollection<IObserveActivation>();
         }
@@ -85,11 +95,13 @@ namespace Pirac
             }
         }
 
-        public IObservable<Unit> Initialized { get; }
+        public IObservable<Unit> WhenInitialized() => whenInitialized;
 
-        public IObservable<bool> Activated { get; }
+        public IObservable<bool> WhenActivated() => whenActivated;
 
-        public IObservable<bool> Deactivated { get; }
+        public IObservable<bool> WhenDeactivated() => whenDeactivated;
+
+        public IObservable<Unit> WhenClosed() => whenClosed;
 
         public IReadOnlyList<IObserveActivation> Children => children;
 
@@ -137,6 +149,8 @@ namespace Pirac
 
                 if (close)
                 {
+                    closed.OnNext(Unit.Default);
+
                     Log.Debug($"Closed {this}.");
                 }
             }
