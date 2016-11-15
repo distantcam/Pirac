@@ -1,5 +1,8 @@
-﻿using System.Windows;
+﻿using System;
+using System.Windows;
+using Bogus;
 using Pirac;
+using SampleApp.Framework;
 
 namespace SampleApp
 {
@@ -9,7 +12,10 @@ namespace SampleApp
         {
             base.OnStartup(e);
 
-            PiracRunner.Start<MainWindowViewModel>();
+            // Initialize data generator
+            Randomizer.Seed = new Random(24601);
+
+            PiracRunner.Start<MainWindowViewModel>(new PiracContext { Container = new AutofacContainer() });
         }
     }
 }

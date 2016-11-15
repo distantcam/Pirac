@@ -3,7 +3,7 @@ using Pirac;
 
 namespace SampleApp
 {
-    class MainWindowAttachment : Attachment<MainWindowViewModel>
+    class MainWindowClosingAttachment : Attachment<MainWindowViewModel>
     {
         protected override void OnAttach()
         {

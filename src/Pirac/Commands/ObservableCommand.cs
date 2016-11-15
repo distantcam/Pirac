@@ -18,7 +18,6 @@ namespace Pirac.Commands
             this.action = action;
 
             canExecuteSubscription = canExecuteObservable
-                .Distinct()
                 .ObserveOnPiracMain()
                 .Subscribe(b =>
                 {

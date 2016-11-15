@@ -12,6 +12,9 @@ public class ModuleWeaver
 
     public void Execute()
     {
+        if (ModuleDefinition.Name != "Pirac")
+            return;
+
         AddGuardsToPiracRunner();
         AddGuardsToPiracContext();
     }
