@@ -101,11 +101,12 @@
     <Compile Include="Events\CancelPersonChanged.cs" />
     <Compile Include="Events\SelectedPersonChanged.cs" />
     <Compile Include="Framework\AutofacContainer.cs" />
+    <Compile Include="Framework\DialogService.cs" />
     <Compile Include="Framework\EventAggregator.cs" />
     <Compile Include="MainWindowClosingAttachment.cs" />
     <Compile Include="MainWindowViewModel.cs" />
     <Compile Include="Modules\CoreModule.cs" />
-    <Compile Include="UI\Details\DetailsSelectionAttachment.cs" />
+    <Compile Include="UI\Details\DetailsSaveLoadAttachment.cs" />
     <Compile Include="UI\Details\DetailsView.xaml.cs">
       <DependentUpon>DetailsView.xaml</DependentUpon>
     </Compile>

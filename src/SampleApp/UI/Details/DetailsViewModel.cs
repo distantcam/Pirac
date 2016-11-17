@@ -14,6 +14,7 @@ namespace SampleApp.UI.Details
         public string PhoneNumber { get; set; }
         public string Address { get; set; }
 
+        [DoNotSetChanged]
         public Person Person { get; set; }
 
         [DoNotSetChanged]

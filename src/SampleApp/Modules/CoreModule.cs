@@ -8,6 +8,7 @@ namespace SampleApp.Modules
         protected override void Load(ContainerBuilder builder)
         {
             builder.RegisterType<EventAggregator>().As<IEventAggregator>().SingleInstance();
+            builder.RegisterType<DialogService>().As<IDialogService>().SingleInstance();
         }
     }
 }

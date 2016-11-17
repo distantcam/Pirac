@@ -7,12 +7,14 @@ using SampleApp.Framework;
 
 namespace SampleApp.UI.Details
 {
-    class DetailsSelectionAttachment : Attachment<DetailsViewModel>
+    class DetailsSaveLoadAttachment : Attachment<DetailsViewModel>
     {
         IEventAggregator eventAggregator;
+        IDialogService dialogService;
 
-        public DetailsSelectionAttachment(IEventAggregator eventAggregator)
+        public DetailsSaveLoadAttachment(IEventAggregator eventAggregator, IDialogService dialogService)
         {
+            this.dialogService = dialogService;
             this.eventAggregator = eventAggregator;
         }
 
@@ -26,14 +28,14 @@ namespace SampleApp.UI.Details
 
                     if (viewModel.IsChanged)
                     {
-                        var ask = MessageBox.Show("You have unsaved changes. Do you wish to save them?", "Save changes?", MessageBoxButton.YesNoCancel);
+                        var ask = dialogService.Show("You have unsaved changes. Do you wish to save them?", "Save changes?", MessageBoxButton.YesNoCancel);
 
                         if (ask == MessageBoxResult.Cancel)
                         {
                             eventAggregator.Publish(new CancelPersonChanged(viewModel.Person));
                             return;
                         }
-                        else if (ask == MessageBoxResult.Yes)
+                        if (ask == MessageBoxResult.Yes)
                         {
                             Save();
                         }
@@ -41,11 +43,7 @@ namespace SampleApp.UI.Details
 
                     viewModel.Person = e.Person;
 
-                    // Copy values for editing
-                    viewModel.FirstName = e.Person.FirstName;
-                    viewModel.LastName = e.Person.LastName;
-                    viewModel.PhoneNumber = e.Person.PhoneNumber;
-                    viewModel.Address = e.Person.Address;
+                    Load();
 
                     viewModel.IsChanged = false;
                 });
@@ -61,9 +59,16 @@ namespace SampleApp.UI.Details
                 });
         }
 
+        private void Load()
+        {
+            viewModel.FirstName = viewModel.Person.FirstName;
+            viewModel.LastName = viewModel.Person.LastName;
+            viewModel.PhoneNumber = viewModel.Person.PhoneNumber;
+            viewModel.Address = viewModel.Person.Address;
+        }
+
         private void Save()
         {
-            // Save values back to original
             viewModel.Person.FirstName = viewModel.FirstName;
             viewModel.Person.LastName = viewModel.LastName;
             viewModel.Person.PhoneNumber = viewModel.PhoneNumber;
