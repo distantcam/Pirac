@@ -1,5 +1,5 @@
 # Pirac Documentation
-Pirac is a Reactive based MVVM framework for WPF.
+Pirac is a reactive based MVVM library for WPF.
 
 ## Quickstart
 
@@ -55,6 +55,6 @@ Attachments are a way of splitting up your ViewModel using composability into re
 
 The `Command` class is a static class with methods for creating command objects. It can create standard and async commands with automatic code to disable/re-enable the command while it's running.
 
-But this is a Reactive framework. Therefore we can also create a command from a boolean observable to enable/disable the command.
+But this is a reactive library. Therefore we can also create a command from a boolean observable to enable/disable the command.
 
 `canExecuteObservable.ToCommand(() => { /* Code to execute */ });`
