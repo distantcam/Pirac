@@ -12,7 +12,7 @@ public class ModuleWeaver
 
     public void Execute()
     {
-        if (ModuleDefinition.Name != "Pirac")
+        if (ModuleDefinition.Name != "Pirac.dll")
             return;
 
         AddGuardsToPiracRunner();
