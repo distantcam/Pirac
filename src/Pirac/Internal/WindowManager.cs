@@ -123,7 +123,6 @@ namespace Pirac.Internal
         class WindowConductor
         {
             IObserveActivation screen;
-            Func<bool> canCloseCheck;
 
             public WindowConductor(IObserveActivation screen, Window window)
             {
