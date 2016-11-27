@@ -4,6 +4,11 @@ using Microsoft.Build.Utilities;
 
 public class GitLinkTask : ToolTask
 {
+    public GitLinkTask()
+    {
+        StandardOutputImportance = "Normal";
+    }
+
     [Required]
     public ITaskItem SolutionDirectory { get; set; }
 
