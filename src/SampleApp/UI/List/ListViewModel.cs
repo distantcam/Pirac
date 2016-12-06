@@ -6,12 +6,7 @@ namespace SampleApp.UI.List
 {
     class ListViewModel : ViewModelBase
     {
-        public ListViewModel()
-        {
-            People = new ObservableCollection<Person>();
-        }
-
-        public ObservableCollection<Person> People { get; }
+        public ObservableCollection<Person> People { get; } = new ObservableCollection<Person>();
 
         public Person SelectedPerson { get; set; }
     }
